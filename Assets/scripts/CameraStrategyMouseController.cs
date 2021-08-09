@@ -2,6 +2,7 @@
 using attribute;
 using UnityEditor;
 using UnityEngine;
+using utils;
 
 /**
  * Allows player to move camera as in strategy games like "WarCraft 3"
@@ -15,12 +16,14 @@ public class CameraStrategyMouseController : MonoBehaviour
 	[Range(0.01f, 10f)]
 	private float cameraZoomSpeed = 1;
 	[SerializeField]
-	public VRange cameraZoomConstraints = new VRange(0.3f, 1.7f);
+	public VRangeFloat cameraZoomConstraints = new VRangeFloat(0.4f, 2.1f);
 	[SerializeField]
 	private new bool enabled = true;
 	[SerializeField]
 	[TooltipAttribute("key to turn enabled/disabled script state")]
 	private KeyCode switchKey = KeyCode.E;
+	[SerializeField]
+	private VRectConstraints playgroundConstraints = new VRectConstraints(-5, -5, 5, 5);
 
 	private new Camera camera;
 	private Vector2 screenSize;
@@ -33,7 +36,7 @@ public class CameraStrategyMouseController : MonoBehaviour
 		camera = gameObject.GetComponent<Camera>();
 
 		#if UNITY_EDITOR
-		screenSize = Handles.GetMainGameViewSize();
+			screenSize = Handles.GetMainGameViewSize();
 		#else
             screenSize = new Vector2(Screen.width, Screen.height);
 		#endif
@@ -42,15 +45,15 @@ public class CameraStrategyMouseController : MonoBehaviour
 	private void LateUpdate()
 	{
 		TrySwitchCameraState();
-
 		if (!enabled) return;
 
-		TryMoveCamera();
-		TryZoomCamera();
-		CorrectCameraPosition();
+		if (TryMoveCamera() || TryZoomCamera())
+		{
+			CorrectCameraPosition();
+		}
 	}
 
-	private void TryMoveCamera()
+	private bool TryMoveCamera()
 	{
 
 		int x = 0;
@@ -70,20 +73,49 @@ public class CameraStrategyMouseController : MonoBehaviour
 		{
 			Vector3 direction = new Vector3(x, y);
 			camera.transform.position += direction * (CAMERA_SPEED_COEFFICIENT * cameraMoveSpeed);
+			return true;
 		}
+
+		return false;
 	}
 
-	private void TryZoomCamera()
+	private bool TryZoomCamera()
 	{
 		float delta = Input.mouseScrollDelta.y;
-		if (delta == 0) return;
+		if (delta == 0) return false;
 
 		var newCameraSize = camera.orthographicSize - delta * (CAMERA_ZOOM_COEFFICIENT * cameraZoomSpeed);
-		camera.orthographicSize = Clamp(newCameraSize, cameraZoomConstraints);
+		camera.orthographicSize = VMath.Clamp(newCameraSize, cameraZoomConstraints.min, cameraZoomConstraints.max);
+
+		return true;
 	}
 
 	private void CorrectCameraPosition()
 	{
+		VRectConstraints cameraCenterConstraints = CalculateCameraPositionConstraints(camera, playgroundConstraints);
+
+		var cameraPosition = camera.transform.position;
+		// может не отличаться от оригинальной позиции
+		var correctCameraPosition = cameraCenterConstraints.Clamp(cameraPosition);
+
+		camera.transform.position = new Vector3(correctCameraPosition.x, correctCameraPosition.y, cameraPosition.z);
+	}
+
+	private static VRectConstraints CalculateCameraPositionConstraints(Camera camera, VRectConstraints visibleSceneConstraints)
+	{
+		/*
+		 * На такое расстояние нужно сдвинуть камеру относительно любого края playground-а, чтобы не выйти за его пределы.
+		 * Для лучшего понимания откуда взялись эти формулы оставляю этот код:
+		 * 
+		 * float cameraViewHeight = camera.orthographicSize * 2.0f;
+		 * float cameraViewWidth = cameraViewHeight * camera.aspect;
+		 */
+		Vector2 cameraOffset = new Vector2(camera.orthographicSize * camera.aspect, camera.orthographicSize);
+
+		return new VRectConstraints(
+			visibleSceneConstraints.min + cameraOffset,
+			visibleSceneConstraints.max - cameraOffset
+		);
 	}
 
 	private void TrySwitchCameraState()
@@ -93,10 +125,5 @@ public class CameraStrategyMouseController : MonoBehaviour
 		{
 			enabled = !enabled;
 		}
-	}
-
-	private static float Clamp(float value, VRange constraints)
-	{
-		return Math.Max(Math.Min(value, constraints.max), constraints.min);
 	}
 }

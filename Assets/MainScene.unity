@@ -451,7 +451,7 @@ Camera:
   far clip plane: 3
   field of view: 60
   orthographic: 1
-  orthographic size: 0.48
+  orthographic size: 1
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -496,8 +496,8 @@ MonoBehaviour:
   cameraMoveSpeed: 1
   cameraZoomSpeed: 1
   cameraZoomConstraints:
-    min: 0
-    max: 0
+    min: 0.4
+    max: 2.1
   enabled: 1
   switchKey: 101
 --- !u!114 &1737406499
