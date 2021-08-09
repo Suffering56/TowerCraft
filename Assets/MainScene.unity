@@ -500,6 +500,9 @@ MonoBehaviour:
     max: 2.1
   enabled: 1
   switchKey: 101
+  playgroundConstraints:
+    min: {x: -5, y: -5}
+    max: {x: 5, y: 5}
 --- !u!114 &1737406499
 MonoBehaviour:
   m_ObjectHideFlags: 0
