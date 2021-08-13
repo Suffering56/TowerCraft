@@ -21,7 +21,10 @@ namespace settings
 		public bool buildingModeEnabled = true;
 
 		[SerializeField]
-		public Color isometricGridBlockDefaultColor = Color.white;
+		public Color isometricGridBlockDefaultColor = new Color(1, 1, 1, 0.5f);
+
+		[SerializeField]
+		public Color isometricGridBlockSelectedColor = new Color(1, 0, 0, 0.5f);
 
 		[SerializeField]
 		public bool showDebugGrid = true;

@@ -1,3 +1,4 @@
+using System;
 using settings;
 using settings.support;
 using UnityEngine;
@@ -12,6 +13,14 @@ namespace logic
 		public void OnSettingsRefreshed(ISettingsHolder settings, bool isForce)
 		{
 			playgroundSettings = settings.PlaygroundSettings;
+			if (isForce)
+			{
+				DrawTerrain();
+			}
+		}
+
+		private void Start()
+		{
 			DrawTerrain();
 		}
 

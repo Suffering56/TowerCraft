@@ -2,7 +2,6 @@ using settings;
 using settings.support;
 using UnityEngine;
 using utils;
-using view;
 
 namespace logic
 {
@@ -53,7 +52,7 @@ namespace logic
 			DrawDebugGrid((pivot, row, col) =>
 			{
 				InstantiateGridBlock(pivot.x, pivot.y, col, row * 2, blockScale);
-				
+
 				pivot.x += step * 2;
 				pivot.y -= step;
 				if (pivot.x > maxX || pivot.y < minY) return;
@@ -63,19 +62,19 @@ namespace logic
 		}
 		private void InstantiateGridBlock(float x, float y, int xName, int yName, Vector3 scale)
 		{
-
 			var blockInstance = Instantiate(isometricGridBlockPrefab, gameObject.transform, true);
 			blockInstance.name = $"{isometricGridBlockPrefab.name}[{xName},{yName}]";
-			blockInstance.transform.position = new Vector3(x, y, 0);
+			blockInstance.transform.position = new Vector3(x, y, transform.position.z);
 			blockInstance.transform.localScale = scale;
 
-			var blockParams = blockInstance.GetComponent<PositionName2D>();
-			blockParams.xName = xName;
-			blockParams.yName = yName;
-
-			var spriteRenderer = blockInstance.GetComponentInChildren<SpriteRenderer>();
+			var spriteRenderer = blockInstance.GetComponent<SpriteRenderer>();
 			spriteRenderer.color = playgroundSettings.isometricGridBlockDefaultColor;
 			spriteRenderer.sortingOrder = yName;
+
+			var state = blockInstance.GetComponent<IsometricGridElementState>();
+			state.playgroundSettings = playgroundSettings;
+			state.xName = xName;
+			state.yName = yName;
 		}
 
 		private void OnDrawGizmos()
