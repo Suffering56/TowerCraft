@@ -9,6 +9,6 @@
 		/**
 		 * Вызывается о событию "MonoBehaviour.OnDrawGizmos()", но только при рефреше настроек (переключении флагша refresh в false в редакторе Unity)
 		 */
-		void OnSettingsRefreshed(ISettingsHolder settingsHolder);
+		void OnSettingsRefreshed(ISettingsHolder settingsHolder, bool isForce);
 	}
 }

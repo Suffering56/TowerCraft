@@ -1,23 +1,31 @@
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 namespace settings
 {
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	public class PlaygroundSettings : MonoBehaviour
 	{
 		[SerializeField]
 		[Tooltip("terrain size in unity units/count of grass sprites will be x * y")]
 		public Vector2 terrainSize;
-	
+
 		[SerializeField]
 		public GameObject terrainBlockPrefab;
-		
+
+		[SpaceAttribute]
 		[SerializeField]
-		public float gridBlockHeight = 0.25f;
+		public float isometricGridHeight = 0.25f;
 
 		[SerializeField]
-		public float gridZIndex = 0;
+		public bool buildingModeEnabled = true;
 
 		[SerializeField]
-		public bool showGrid = true;
+		public Color isometricGridBlockDefaultColor = Color.white;
+
+		[SerializeField]
+		public bool showDebugGrid = true;
+
+		public float isometricGridWidth => isometricGridHeight * 2;
 	}
 }

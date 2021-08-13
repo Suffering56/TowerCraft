@@ -34,12 +34,12 @@ namespace settings.support
 			}
 
 			Instance = this;
+			
 			ReadSettings();
-		}
-
-		private void Start()
-		{
-			OnSettingsRefreshed();
+			Debug.Log("Awake: Settings initialized");
+			
+			OnSettingsRefreshed(false);
+			Debug.Log("Awake: Settings refreshed");
 		}
 
 		private void OnDrawGizmos()
@@ -50,23 +50,23 @@ namespace settings.support
 			if (forceRefresh || delta > refreshDelayMs)
 			{
 				ReadSettings();
-				OnSettingsRefreshed();
+				OnSettingsRefreshed(forceRefresh);
 				lastRefreshTime = currentTime;
 				forceRefresh = false;
 			}
 		}
 
-		private void OnSettingsRefreshed()
+		private void OnSettingsRefreshed(bool force)
 		{
 			if (!objectWithListeners.Any()) return;
-			
+
 			var listeners = objectWithListeners
 			.SelectMany(go => go.GetComponents<ISettingsDebugRefreshListener>())
 			.ToList();
 
 			foreach (var listener in listeners)
 			{
-				listener.OnSettingsRefreshed(this);
+				listener.OnSettingsRefreshed(this, force);
 			}
 		}
 
