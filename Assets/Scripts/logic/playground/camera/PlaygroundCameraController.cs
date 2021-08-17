@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using utils;
 
-namespace logic.playground
+namespace logic.playground.camera
 {
 	/**
 	* Allows player to move camera as in strategy games like "WarCraft 3"

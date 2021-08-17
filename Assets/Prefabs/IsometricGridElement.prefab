@@ -73,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 216684073
-  m_SortingLayer: 4
+  m_SortingLayer: 0
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 5036bed59541e0f4e994768829685729, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
@@ -95,9 +95,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3436876323765434492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88de9795cddaddd4f891e2cc9098874f, type: 3}
+  m_Script: {fileID: 11500000, guid: bcab480a5f7afef4fbbc389e33fedb02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xName: 0
+  yName: 0
+  playgroundSettings: {fileID: 0}
 --- !u!114 &-3972422455217119661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,11 +110,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3436876323765434492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c34f7916f2ed429bb653be446ec5826f, type: 3}
+  m_Script: {fileID: 11500000, guid: 9075c4cbd700e2c4390ff5c03ac03c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultColor: {r: 1, g: 1, b: 1, a: 0.5019608}
-  selectedColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!60 &1685350250643832024
 PolygonCollider2D:
   m_ObjectHideFlags: 0
