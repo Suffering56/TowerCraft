@@ -1,7 +1,6 @@
 ﻿using System;
 using attribute;
-using settings;
-using settings.support;
+using logic.playground.camera.settings;
 using UnityEditor;
 using UnityEngine;
 using utils;
@@ -14,7 +13,10 @@ namespace logic.playground.camera
 	public class PlaygroundCameraController : MonoBehaviour
 	{
 		private new Camera camera;
-		private CameraSettings cameraSettings;
+		
+		// [Inject]
+		private PlaygroundCameraState state;
+		
 		private VRectConstraints playgroundConstraints;
 		private Vector2 lastScreenSize;
 
@@ -25,11 +27,13 @@ namespace logic.playground.camera
 		private void Start()
 		{
 			camera = gameObject.GetComponent<Camera>();
-			Vector2 terrainSize = SettingsManager.Instance.PlaygroundSettings.terrainSize;
+			// Vector2 terrainSize = DebugSettingsManager.Instance.DebugSettings.terrainUnitsSize;
+			Vector2 terrainSize = new Vector2(10, 10);
+			
 			float xOffset = terrainSize.x / 2;
 			float yOffset = terrainSize.y / 2;
-		
-			cameraSettings = SettingsManager.Instance.CameraSettings;
+
+			state = new PlaygroundCameraState();
 			playgroundConstraints = new VRectConstraints(-xOffset, -yOffset, xOffset, yOffset);
 			HandleScreenSizeChanges();
 		}
@@ -40,7 +44,7 @@ namespace logic.playground.camera
 			TrySwitchCameraState();
 
 			if (!enabled) return;
-
+			
 			if (screenSizeChanged | TryMoveCamera() | TryZoomCamera())
 			{
 				CorrectCameraPosition();
@@ -74,7 +78,7 @@ namespace logic.playground.camera
 			if (x != 0 || y != 0)
 			{
 				Vector3 direction = new Vector3(x, y);
-				camera.transform.position += direction * (CAMERA_SPEED_COEFFICIENT * cameraSettings.cameraMoveSpeed);
+				camera.transform.position += direction * (CAMERA_SPEED_COEFFICIENT * state.CameraMoveSpeed);
 				return true;
 			}
 
@@ -86,8 +90,8 @@ namespace logic.playground.camera
 			float delta = Input.mouseScrollDelta.y;
 			if (delta == 0) return false;
 
-			var newCameraSize = camera.orthographicSize - delta * (CAMERA_ZOOM_COEFFICIENT * cameraSettings.cameraZoomSpeed);
-			camera.orthographicSize = VMath.Clamp(newCameraSize, cameraSettings.cameraZoomConstraints.min, cameraSettings.cameraZoomConstraints.max);
+			var newCameraSize = camera.orthographicSize - delta * (CAMERA_ZOOM_COEFFICIENT * state.CameraZoomSpeed);
+			camera.orthographicSize = VMath.Clamp(newCameraSize, PlaygroundCameraSettings.CameraZoomConstraints.min, PlaygroundCameraSettings.CameraZoomConstraints.max);
 
 			return true;
 		}
@@ -105,7 +109,7 @@ namespace logic.playground.camera
 		private void TrySwitchCameraState()
 		{
 
-			if (Input.GetKeyUp(cameraSettings.stopKey))
+			if (Input.GetKeyUp(PlaygroundCameraSettings.StopKey))
 			{
 				enabled = !enabled;
 			}
@@ -126,7 +130,7 @@ namespace logic.playground.camera
 		private void ClampMaxCameraZoom()
 		{
 			var originOrthographicSize = camera.orthographicSize;
-			camera.orthographicSize = cameraSettings.cameraZoomConstraints.max;
+			camera.orthographicSize = PlaygroundCameraSettings.CameraZoomConstraints.max;
 
 			Vector2 playgroundSize = playgroundConstraints.max - playgroundConstraints.min;
 			Vector2 maxCameraViewSize = CalculateCameraViewSize(camera);
@@ -136,8 +140,8 @@ namespace logic.playground.camera
 
 			if (maxRatio > 1)
 			{
-				float maxCameraZoom = cameraSettings.cameraZoomConstraints.max / maxRatio;
-				cameraSettings.cameraZoomConstraints.max = maxCameraZoom;
+				float maxCameraZoom = PlaygroundCameraSettings.CameraZoomConstraints.max / maxRatio;
+				PlaygroundCameraSettings.CameraZoomConstraints.max = maxCameraZoom;
 			}
 
 			camera.orthographicSize = originOrthographicSize;

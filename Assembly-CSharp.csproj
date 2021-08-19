@@ -41,24 +41,25 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\settings\PlaygroundSettings.cs" />
-     <Compile Include="Assets\Scripts\logic\playground\IsometricGridGenerator.cs" />
-     <Compile Include="Assets\Scripts\settings\support\SettingsManager.cs" />
-     <Compile Include="Assets\Scripts\logic\playground\state\PlaygroundStateImpl.cs" />
-     <Compile Include="Assets\Scripts\settings\support\ISettingsDebugRefreshListener.cs" />
+     <Compile Include="Assets\Scripts\settings\debug\DebugSettings.cs" />
+     <Compile Include="Assets\Scripts\logic\playground\IsometricGridGeneratorComponent.cs" />
+     <Compile Include="Assets\Scripts\settings\debug\DebugSettingsManager.cs" />
+     <Compile Include="Assets\Scripts\logic\playground\state\PlaygroundState.cs" />
+     <Compile Include="Assets\Scripts\settings\debug\IDebugSettingsRefreshListener.cs" />
      <Compile Include="Assets\Scripts\logic\playground\state\building\BuildingState.cs" />
      <Compile Include="Assets\Scripts\utils\VUnityUtils.cs" />
-     <Compile Include="Assets\Scripts\settings\CameraSettings.cs" />
+     <Compile Include="Assets\Scripts\logic\playground\camera\settings\PlaygroundCameraSettings.cs" />
+     <Compile Include="Assets\Scripts\ProjectContextInstaller.cs" />
      <Compile Include="Assets\Scripts\logic\playground\camera\PlaygroundCameraController.cs" />
      <Compile Include="Assets\Scripts\attribute\VRectConstraints.cs" />
      <Compile Include="Assets\Scripts\utils\VMath.cs" />
-     <Compile Include="Assets\Scripts\input\MouseEventsHandler.cs" />
      <Compile Include="Assets\Scripts\logic\playground\state\building\BuildingType.cs" />
-     <Compile Include="Assets\Scripts\input\IMouseListener.cs" />
      <Compile Include="Assets\Scripts\attribute\VRangeFloat.cs" />
-     <Compile Include="Assets\Scripts\settings\support\ISettingsHolder.cs" />
-     <Compile Include="Assets\Scripts\logic\playground\TerrainGenerator.cs" />
-     <Compile Include="Assets\Scripts\logic\playground\IsometricGridElementState.cs" />
+     <Compile Include="Assets\Scripts\logic\playground\PlaygroundTerrainGeneratorComponent.cs" />
+     <Compile Include="Assets\Scripts\logic\playground\IsometricGridElementController.cs" />
+     <Compile Include="Assets\Scripts\logic\playground\camera\PlaygroundCameraState.cs" />
+     <Compile Include="Assets\Scripts\SingletonFactory.cs" />
+     <Compile Include="Assets\Scripts\TestSettings.cs" />
      <Reference Include="UnityEngine">
      <HintPath>F:/02_Unity/Unity/2021.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
