@@ -9,12 +9,9 @@ namespace pvs.logic.playground {
 
 		[Inject] private IPlaygroundInitialState initialState;
 
-		public void OnDebugSettingsRefreshed(DebugSettings debugSettings, bool isForce) {
+		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState ??= debugSettings;
-
-			if (isForce) {
-				DrawTerrain(true);
-			}
+			DrawTerrain(true);
 		}
 
 		private void Start() {

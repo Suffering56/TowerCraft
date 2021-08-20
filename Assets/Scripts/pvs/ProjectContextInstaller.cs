@@ -9,7 +9,7 @@ namespace pvs {
 		// ReSharper disable Unity.PerformanceAnalysis
 		public override void InstallBindings()
 		{
-			Debug.Log($"{GetType()}.InstallBindings()");
+			Debug.Log($"{GetType().Name}.InstallBindings()");
 
 			BindDebugSettings();
 			BindPlaygroundState();

@@ -103,7 +103,7 @@ namespace pvs.logic.playground.camera {
 		}
 		private void TrySwitchCameraState() {
 
-			if (Input.GetKeyUp(initialState.stopKey))
+			if (Input.GetKeyUp(initialState.cameraStopKey))
 			{
 				active = !active;
 			}

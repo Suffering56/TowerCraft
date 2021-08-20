@@ -7,6 +7,6 @@ namespace pvs.logic.playground.camera {
 
 		public VRangeFloat cameraZoomConstraints { get; }
 
-		public KeyCode stopKey { get; }
+		public KeyCode cameraStopKey { get; }
 	}
 }

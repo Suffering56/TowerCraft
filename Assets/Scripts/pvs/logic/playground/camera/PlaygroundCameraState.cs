@@ -8,14 +8,14 @@ namespace pvs.logic.playground.camera {
 		public float cameraMoveSpeed { get; }
 		public float cameraZoomSpeed { get; }
 		public VRangeFloat cameraZoomConstraints { get; }
-		public KeyCode stopKey { get; }
+		public KeyCode cameraStopKey { get; }
 
 		public PlaygroundCameraState(DebugSettings debugSettings) {
 			cameraMoveSpeed = debugSettings.defaultCameraMoveSpeed;
 			cameraZoomSpeed = debugSettings.defaultCameraZoomSpeed;
 			
 			cameraZoomConstraints = debugSettings.cameraZoomConstraints;
-			stopKey = debugSettings.stopKey;
+			cameraStopKey = debugSettings.cameraStopKey;
 		}
 	}
 }

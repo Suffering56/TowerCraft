@@ -10,6 +10,6 @@ namespace pvs.settings.debug
 		/**
 		 * Вызывается о событию "MonoBehaviour.OnDrawGizmos()", но только при рефреше настроек (переключении флагша refresh в false в редакторе Unity)
 		 */
-		void OnDebugSettingsRefreshed([NotNull] DebugSettings debugSettings, bool isForce);
+		void OnDebugSettingsRefreshed([NotNull] DebugSettings debugSettings);
 	}
 }

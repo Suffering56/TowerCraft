@@ -3,6 +3,7 @@ using pvs.attribute;
 using pvs.logic.playground.camera;
 using pvs.logic.playground.state;
 using UnityEngine;
+
 namespace pvs.settings.debug {
 
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -17,7 +18,7 @@ namespace pvs.settings.debug {
 		public GameObject _terrainElementPrefab;
 		public GameObject terrainElementPrefab => _terrainElementPrefab;
 
-		[Space]
+		[SpaceAttribute(20)]
 		[SerializeField]
 		public float _isometricGridHeight = 0.25f;
 		public float isometricGridHeight => _isometricGridHeight;
@@ -28,6 +29,10 @@ namespace pvs.settings.debug {
 		public bool buildingModeEnabled => _buildingModeEnabled;
 
 		[SerializeField]
+		public bool _showDebugGrid = true;
+		public bool showDebugGrid => _showDebugGrid;
+
+		[SerializeField]
 		public Color _isometricGridDefaultColor = new Color(1, 1, 1, 0.5f);
 		public Color isometricGridDefaultColor => _isometricGridDefaultColor;
 
@@ -35,10 +40,7 @@ namespace pvs.settings.debug {
 		public Color _isometricGridSelectedColor = new Color(1, 0, 0, 0.5f);
 		public Color isometricGridSelectedColor => _isometricGridSelectedColor;
 
-		[SerializeField]
-		public bool _showDebugGrid = true;
-		public bool showDebugGrid => _showDebugGrid;
-
+		[SpaceAttribute(20)]
 		[Range(0.01f, 10f)]
 		[SerializeField]
 		public float _cameraMoveSpeed = 1;
@@ -54,8 +56,12 @@ namespace pvs.settings.debug {
 		public VRangeFloat cameraZoomConstraints => _cameraZoomConstraints;
 
 		[SerializeField]
-		public KeyCode _stopKey = KeyCode.E;
+		public KeyCode _cameraStopKey = KeyCode.E;
 
-		public KeyCode stopKey => _stopKey;
+		public KeyCode cameraStopKey => _cameraStopKey;
+
+		private void OnValidate() {
+			GetComponent<DebugSettingsManager>().triggerRefresh = true;
+		}
 	}
 }

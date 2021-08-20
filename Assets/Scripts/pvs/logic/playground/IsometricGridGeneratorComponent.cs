@@ -14,12 +14,9 @@ namespace pvs.logic.playground {
 		[Inject] private DiContainer container;
 		[Inject] private IPlaygroundInitialState initialState;
 
-		public void OnDebugSettingsRefreshed(DebugSettings debugSettings, bool isForce) {
+		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState ??= debugSettings;
-
-			if (isForce) {
-				DrawBuildingModeGrid();
-			}
+			DrawBuildingModeGrid();
 		}
 
 		private void Start() {
