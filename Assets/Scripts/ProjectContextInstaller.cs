@@ -1,6 +1,4 @@
-using logic.playground.camera.settings;
 using logic.playground.state;
-using settings;
 using settings.debug;
 using UnityEngine;
 using Zenject;
@@ -13,17 +11,11 @@ public class ProjectContextInstaller : MonoInstaller
 		Debug.Log($"{GetType()}.InstallBindings()");
 
 		BindDebugSettings();
-
-		// Container.BindFactory<PlaygroundState, PlaygroundState.Provider>()
-		//          .AsSingle();
-
+		BindPlaygroundState();
+	}
+	private void BindPlaygroundState() {
 		Container.Bind<PlaygroundState>()
-		         .AsSingle()
-		         .NonLazy();
-		Container.Bind<TestSettings>()
-		         .AsSingle()
-		         .WithArguments(22)
-		         .NonLazy();
+		         .AsSingle();
 	}
 
 	private void BindDebugSettings()

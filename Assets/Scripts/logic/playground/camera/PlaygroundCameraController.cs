@@ -1,22 +1,23 @@
 ﻿using System;
 using attribute;
 using logic.playground.camera.settings;
+using settings.debug;
 using UnityEditor;
 using UnityEngine;
 using utils;
+using Zenject;
 
-namespace logic.playground.camera
-{
+namespace logic.playground.camera {
 	/**
 	* Allows player to move camera as in strategy games like "WarCraft 3"
 	*/
-	public class PlaygroundCameraController : MonoBehaviour
-	{
+	public class PlaygroundCameraController : MonoBehaviour {
 		private new Camera camera;
-		
-		// [Inject]
+
+		[Inject] private DebugSettings debugSettings;
+
 		private PlaygroundCameraState state;
-		
+
 		private VRectConstraints playgroundConstraints;
 		private Vector2 lastScreenSize;
 
@@ -24,27 +25,25 @@ namespace logic.playground.camera
 		private const float CAMERA_ZOOM_COEFFICIENT = 0.1f;
 		private const float MOUSE_EDGE_OFFSET = 5f;
 
-		private void Start()
-		{
+		private bool active = true;
+
+		private void Start() {
 			camera = gameObject.GetComponent<Camera>();
-			// Vector2 terrainSize = DebugSettingsManager.Instance.DebugSettings.terrainUnitsSize;
-			Vector2 terrainSize = new Vector2(10, 10);
-			
-			float xOffset = terrainSize.x / 2;
-			float yOffset = terrainSize.y / 2;
+
+			float xOffset = debugSettings.terrainSize.x / 2;
+			float yOffset = debugSettings.terrainSize.y / 2;
 
 			state = new PlaygroundCameraState();
 			playgroundConstraints = new VRectConstraints(-xOffset, -yOffset, xOffset, yOffset);
 			HandleScreenSizeChanges();
 		}
-		
-		private void LateUpdate()
-		{
+
+		private void LateUpdate() {
 			bool screenSizeChanged = HandleScreenSizeChanges();
 			TrySwitchCameraState();
 
-			if (!enabled) return;
-			
+			if (!active) return;
+
 			if (screenSizeChanged | TryMoveCamera() | TryZoomCamera())
 			{
 				CorrectCameraPosition();
@@ -52,8 +51,7 @@ namespace logic.playground.camera
 		}
 
 		// Важно вызывать после HandleScreenSizeChanges
-		private bool TryMoveCamera()
-		{
+		private bool TryMoveCamera() {
 			int x = 0;
 			int y = 0;
 
@@ -85,8 +83,7 @@ namespace logic.playground.camera
 			return false;
 		}
 
-		private bool TryZoomCamera()
-		{
+		private bool TryZoomCamera() {
 			float delta = Input.mouseScrollDelta.y;
 			if (delta == 0) return false;
 
@@ -96,8 +93,7 @@ namespace logic.playground.camera
 			return true;
 		}
 
-		private void CorrectCameraPosition()
-		{
+		private void CorrectCameraPosition() {
 			VRectConstraints cameraCenterConstraints = CalculateCameraPositionConstraints(camera, playgroundConstraints);
 
 			var cameraPosition = camera.transform.position;
@@ -106,17 +102,15 @@ namespace logic.playground.camera
 
 			camera.transform.position = new Vector3(correctCameraPosition.x, correctCameraPosition.y, cameraPosition.z);
 		}
-		private void TrySwitchCameraState()
-		{
+		private void TrySwitchCameraState() {
 
 			if (Input.GetKeyUp(PlaygroundCameraSettings.StopKey))
 			{
-				enabled = !enabled;
+				active = !active;
 			}
 		}
 
-		private bool HandleScreenSizeChanges()
-		{
+		private bool HandleScreenSizeChanges() {
 			var actualScreenSize = GetScreenSize();
 			if (actualScreenSize != lastScreenSize)
 			{
@@ -127,8 +121,7 @@ namespace logic.playground.camera
 			return false;
 		}
 
-		private void ClampMaxCameraZoom()
-		{
+		private void ClampMaxCameraZoom() {
 			var originOrthographicSize = camera.orthographicSize;
 			camera.orthographicSize = PlaygroundCameraSettings.CameraZoomConstraints.max;
 
@@ -147,8 +140,7 @@ namespace logic.playground.camera
 			camera.orthographicSize = originOrthographicSize;
 		}
 
-		private static VRectConstraints CalculateCameraPositionConstraints(Camera camera, VRectConstraints visibleSceneConstraints)
-		{
+		private static VRectConstraints CalculateCameraPositionConstraints(Camera camera, VRectConstraints visibleSceneConstraints) {
 			// На такое расстояние нужно сдвинуть камеру относительно любого края playground-а, чтобы не выйти за его пределы.
 			Vector2 cameraOffset = CalculateCameraViewSize(camera) / 2f;
 
@@ -158,18 +150,16 @@ namespace logic.playground.camera
 			);
 		}
 
-		private static Vector2 CalculateCameraViewSize(Camera camera)
-		{
+		private static Vector2 CalculateCameraViewSize(Camera camera) {
 			float cameraViewHeight = camera.orthographicSize * 2.0f;
 			float cameraViewWidth = cameraViewHeight * camera.aspect;
 			return new Vector2(cameraViewWidth, cameraViewHeight);
 		}
 
-		private static Vector2 GetScreenSize()
-		{
+		private static Vector2 GetScreenSize() {
 
 			#if UNITY_EDITOR
-				return Handles.GetMainGameViewSize();
+			return Handles.GetMainGameViewSize();
 			#else
 				return new Vector2(Screen.width, Screen.height);
 			#endif

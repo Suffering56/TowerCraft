@@ -7,24 +7,14 @@ using Zenject;
 namespace logic.playground.state {
 	public class PlaygroundState {
 
-		[Inject] private readonly TestSettings testSettings;
-
 		public Vector2 terrainSize { get; }
 
 		public GameObject terrainTexturePrefab { get; }
 
-		// public class Provider : SingletonFactory<PlaygroundState>
-		// {
-		// }
-
-
-
-
-
-
-
-
-
+		public PlaygroundState(DebugSettings debugSettings) {
+			terrainSize = debugSettings.terrainSize;
+			terrainTexturePrefab = debugSettings.terrainTexturePrefab;
+		}
 
 
 

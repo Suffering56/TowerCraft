@@ -59,7 +59,6 @@
      <Compile Include="Assets\Scripts\logic\playground\IsometricGridElementController.cs" />
      <Compile Include="Assets\Scripts\logic\playground\camera\PlaygroundCameraState.cs" />
      <Compile Include="Assets\Scripts\SingletonFactory.cs" />
-     <Compile Include="Assets\Scripts\TestSettings.cs" />
      <Reference Include="UnityEngine">
      <HintPath>F:/02_Unity/Unity/2021.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
