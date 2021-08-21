@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using pvs.utils.code;
 using UnityEngine;
 namespace pvs.logic.playground.state.building.settings {
 
+	[VComponent]
 	public class BuildingsSettings : IBuildingsSettings {
 
 		private readonly Dictionary<BuildingType, BuildingSettings> buildings;

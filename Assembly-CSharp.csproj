@@ -68,6 +68,9 @@
      <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\settings\IBuildingsSettings.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\settings\BuildingsSettings.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\IBuildingState.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\BuildingsViewController.cs" />
+     <Compile Include="Assets\Scripts\pvs\settings\debug\Constants.cs" />
+     <Compile Include="Assets\Scripts\pvs\utils\code\VComponent.cs" />
      <Reference Include="UnityEngine">
      <HintPath>F:/02_Unity/Unity/2021.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>

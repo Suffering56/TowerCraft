@@ -17,8 +17,8 @@ namespace pvs.logic.playground {
 
 		[Inject] private DiContainer container;
 		[Inject] private IPlaygroundInitialState initialState;
-		[Inject] private IPlaygroundState state;
 		private IBuildingState underConstructionBuilding;
+		private bool buildingModeEnabled = false;
 
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState ??= debugSettings;
@@ -30,41 +30,15 @@ namespace pvs.logic.playground {
 		}
 
 		private void Update() {
-			var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-			if (Input.GetKeyUp(KeyCode.B)) {
-				if (underConstructionBuilding == null) {
-					DrawBuildingModeGrid(true);
-					StartBuildingProcess(mousePosition);
-				} else {
-					CancelBuildingProcess();
-					VUnityUtils.CleanChildren(transform);
-				}
+			if (Input.GetKeyUp(Constants.BUILDING_MODE_KEY)) {
+				buildingModeEnabled = !buildingModeEnabled;
+			} else if (Input.GetKeyUp(Constants.FINISH_BUILD_KEY)) {
+				buildingModeEnabled = false;
+			} else {
 				return;
 			}
-	
-			if (underConstructionBuilding != null) {
-				if (Input.GetKeyUp(KeyCode.F)) {
-					FinishBuildingProcess();
-				} else {
-					underConstructionBuilding.viewObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
-				}
-			}
+			DrawBuildingModeGrid(buildingModeEnabled);
 		}
-		private void FinishBuildingProcess() {
-			state.FinishBuild(underConstructionBuilding);
-			VUnityUtils.CleanChildren(transform, child => child != underConstructionBuilding.viewObject);
-			underConstructionBuilding = null;
-		}
-		private void CancelBuildingProcess() {
-			var buildingView = underConstructionBuilding.viewObject;
-			underConstructionBuilding = null;
-			buildingView.SetActive(false);
-			DestroyImmediate(buildingView);
-		}
-
-		private void StartBuildingProcess(Vector3 mousePosition) { underConstructionBuilding = state.CreateBuilding(BuildingType.BARRACKS, mousePosition, transform); }
-
 
 		/**
 		 * Раситываем scale isometricGridBlockPrefab, исходя из следующей информации:

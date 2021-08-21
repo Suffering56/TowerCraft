@@ -1,7 +1,9 @@
 using pvs.settings.debug;
+using pvs.utils.code;
 using UnityEngine;
 namespace pvs.logic.playground.state {
 
+	[VComponent]
 	public class PlaygroundInitialState : IPlaygroundInitialState {
 		public Vector2 terrainSize { get; }
 		public GameObject terrainElementPrefab { get; }

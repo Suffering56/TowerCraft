@@ -1,23 +1,30 @@
-﻿using pvs.logic.playground.state.building.settings;
+﻿using System;
+using pvs.logic.playground.state.building.settings;
 using UnityEngine;
+
 namespace pvs.logic.playground.state.building {
-	
+
 	public class BuildingState : IBuildingState {
 
-		public int id { get; }                            // идентификатор здания
+		private const int UNFINISHED = -1;
+
+		public int id { get; private set; } = UNFINISHED; // идентификатор здания
 		public Vector2 gridPosition { get; private set; } // где построено здание (в какой клетке)
 		public IBuildingSettings settings { get; }        // настройки
-		
-		public GameObject viewObject { get; }
 
-		public BuildingState(int id, IBuildingSettings settings, GameObject objectLink) {
-			this.id = id;
+		public GameObject instanceGameObject { get; }
+
+		public BuildingState(IBuildingSettings settings, GameObject objectLink) {
+			id = id;
 			this.settings = settings;
-			this.viewObject = objectLink;
+			instanceGameObject = objectLink;
 		}
 
-		public void FinishBuild(Vector2 gridPosition) {
+		public void FinishBuild(int id, Vector2 gridPosition) {
+			if (this.id == 0) throw new Exception($"building({this.id}) process with already finished");
+			this.id = id;
 			this.gridPosition = gridPosition;
+			instanceGameObject.name += $"[{id}]";
 		}
 	}
 }

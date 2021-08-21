@@ -1,11 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using pvs.attribute;
 using pvs.logic.playground.state;
+using pvs.utils.code;
 using UnityEngine;
 
 namespace pvs.settings.debug {
 
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
+	[VComponent]
 	public class DebugSettings : MonoBehaviour, IPlaygroundInitialState {
 
 		[SerializeField]
