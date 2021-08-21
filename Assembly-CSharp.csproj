@@ -52,7 +52,7 @@
      <Compile Include="Assets\Scripts\pvs\logic\playground\camera\PlaygroundCameraController.cs" />
      <Compile Include="Assets\Scripts\pvs\attribute\VRectConstraints.cs" />
      <Compile Include="Assets\Scripts\pvs\utils\VMath.cs" />
-     <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\BuildingType.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\settings\BuildingType.cs" />
      <Compile Include="Assets\Scripts\pvs\attribute\VRangeFloat.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\PlaygroundTerrainGeneratorComponent.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\IsometricGridElementController.cs" />
@@ -61,6 +61,13 @@
      <Compile Include="Assets\Scripts\pvs\logic\playground\state\IPlaygroundInitialState.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\camera\IPlaygroundCameraInitialState.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\camera\IPlaygroundCameraState.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\IPlaygroundState.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\PlaygroundState.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\settings\IBuildingSettings.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\settings\BuildingSettings.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\settings\IBuildingsSettings.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\settings\BuildingsSettings.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\state\building\IBuildingState.cs" />
      <Reference Include="UnityEngine">
      <HintPath>F:/02_Unity/Unity/2021.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>

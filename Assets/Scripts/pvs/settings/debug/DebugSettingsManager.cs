@@ -11,8 +11,10 @@ namespace pvs.settings.debug {
 
 		[SerializeField]
 		private List<GameObject> refreshSubscribers = new List<GameObject>();
-
+		
 		private static DebugSettingsManager _instance;
+
+		private bool runtime = false;
 
 		private void Awake() {
 			Debug.Log($"{GetType().Name}.Awake()");
@@ -22,9 +24,12 @@ namespace pvs.settings.debug {
 			}
 
 			_instance = this;
+			runtime = true;
 		}
 
 		private void OnDrawGizmos() {
+			if (runtime) return;
+			
 			if (triggerRefresh) {
 				OnSettingsRefreshed();
 				triggerRefresh = false;

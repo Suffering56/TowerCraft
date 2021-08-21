@@ -1,8 +1,12 @@
+using System;
 using pvs.logic.playground.state;
+using pvs.logic.playground.state.building;
+using pvs.logic.playground.state.building.settings;
 using pvs.settings.debug;
 using pvs.utils;
 using UnityEngine;
 using Zenject;
+using Object = UnityEngine.Object;
 
 namespace pvs.logic.playground {
 
@@ -13,15 +17,54 @@ namespace pvs.logic.playground {
 
 		[Inject] private DiContainer container;
 		[Inject] private IPlaygroundInitialState initialState;
+		[Inject] private IPlaygroundState state;
+		private IBuildingState underConstructionBuilding;
 
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState ??= debugSettings;
-			DrawBuildingModeGrid();
+			DrawBuildingModeGrid(debugSettings.buildingModeEnabled);
 		}
 
 		private void Start() {
-			DrawBuildingModeGrid();
+			DrawBuildingModeGrid(false);
 		}
+
+		private void Update() {
+			var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+			if (Input.GetKeyUp(KeyCode.B)) {
+				if (underConstructionBuilding == null) {
+					DrawBuildingModeGrid(true);
+					StartBuildingProcess(mousePosition);
+				} else {
+					CancelBuildingProcess();
+					VUnityUtils.CleanChildren(transform);
+				}
+				return;
+			}
+	
+			if (underConstructionBuilding != null) {
+				if (Input.GetKeyUp(KeyCode.F)) {
+					FinishBuildingProcess();
+				} else {
+					underConstructionBuilding.viewObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
+				}
+			}
+		}
+		private void FinishBuildingProcess() {
+			state.FinishBuild(underConstructionBuilding);
+			VUnityUtils.CleanChildren(transform, child => child != underConstructionBuilding.viewObject);
+			underConstructionBuilding = null;
+		}
+		private void CancelBuildingProcess() {
+			var buildingView = underConstructionBuilding.viewObject;
+			underConstructionBuilding = null;
+			buildingView.SetActive(false);
+			DestroyImmediate(buildingView);
+		}
+
+		private void StartBuildingProcess(Vector3 mousePosition) { underConstructionBuilding = state.CreateBuilding(BuildingType.BARRACKS, mousePosition, transform); }
+
 
 		/**
 		 * Раситываем scale isometricGridBlockPrefab, исходя из следующей информации:
@@ -32,9 +75,9 @@ namespace pvs.logic.playground {
 			return new Vector3(isometricGridYScale * 2, isometricGridYScale * 2, 1);
 		}
 
-		private void DrawBuildingModeGrid() {
+		private void DrawBuildingModeGrid(bool enabled) {
 			VUnityUtils.CleanChildren(transform);
-			if (!initialState.buildingModeEnabled) return;
+			if (!enabled) return;
 
 			float step = initialState.isometricGridHeight / 2; // половина высоты блока
 
@@ -57,7 +100,7 @@ namespace pvs.logic.playground {
 			var blockInstance = container?.InstantiatePrefab(gridElementPrefab, transform.position, Quaternion.identity, transform)
 			                    ?? Instantiate(gridElementPrefab, gameObject.transform, true);
 
-			blockInstance.name = $"{gridElementPrefab}";
+			blockInstance.name = $"{gridElementPrefab.name}";
 			blockInstance.transform.position = new Vector3(pos.x, pos.y, transform.position.z);
 			blockInstance.transform.localScale = scale;
 
