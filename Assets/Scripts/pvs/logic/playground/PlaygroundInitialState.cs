@@ -1,8 +1,8 @@
-using pvs.logic.playground.isometric;
+﻿using pvs.logic.playground.isometric;
 using pvs.settings.debug;
 using pvs.utils.code;
 using UnityEngine;
-namespace pvs.logic.playground.state {
+namespace pvs.logic.playground {
 
 	[ZenjectComponent]
 	public class PlaygroundInitialState : IPlaygroundInitialState {

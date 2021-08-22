@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-namespace pvs.value
+namespace pvs.attribute
 {
 	[Serializable]
 	public class VRangeFloat : PropertyAttribute

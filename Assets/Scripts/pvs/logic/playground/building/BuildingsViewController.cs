@@ -2,7 +2,6 @@
 using pvs.settings.debug;
 using UnityEngine;
 using Zenject;
-
 namespace pvs.logic.playground.state.building {
 
 	public class BuildingsViewController : MonoBehaviour {

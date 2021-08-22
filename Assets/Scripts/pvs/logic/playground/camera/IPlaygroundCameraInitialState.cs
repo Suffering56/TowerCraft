@@ -1,4 +1,4 @@
-﻿using pvs.value;
+﻿using pvs.attribute;
 using UnityEngine;
 
 namespace pvs.logic.playground.camera {

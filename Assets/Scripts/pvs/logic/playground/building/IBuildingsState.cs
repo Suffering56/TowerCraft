@@ -1,6 +1,5 @@
 ﻿using pvs.logic.playground.state.building.settings;
 using UnityEngine;
-
 namespace pvs.logic.playground.state.building {
 	
 	public interface IBuildingsState {

@@ -1,5 +1,4 @@
 ﻿using pvs.logic.playground.state;
-using pvs.value;
 using UnityEngine;
 
 namespace pvs.logic.playground.isometric {
@@ -46,13 +45,17 @@ namespace pvs.logic.playground.isometric {
 			);
 		}
 
+		public Vector2 GetNearestGrid(Vector2 worldPosition) {
+			
+			
+			return Vector2.down;
+		}
+
 		public void IterateAllElements(IIsometricInfo.GridElementConsumer gridElementConsumer) {
 			if (elementSize.x == 0 || elementSize.y == 0) {
 				Debug.LogError($"infinity loop protection: wrong isometric grid element size {elementSize}");
 				return;
 			}
-			
-			
 			int gridPosY = 0;
 			float worldY = zeroWorldPoint.y;
 
@@ -65,6 +68,7 @@ namespace pvs.logic.playground.isometric {
 				}
 
 				while (worldX <= maxWorldX) {
+					// рисуем мать его ромб
 					gridElementConsumer.Invoke(
 						new Vector2(worldX, worldY),
 						new IsometricGridPosition(gridPosX, gridPosY),

@@ -1,7 +1,7 @@
 ﻿using System;
 using pvs.utils;
 using UnityEngine;
-namespace pvs.value
+namespace pvs.attribute
 {
 	[Serializable]
 	public class VRectConstraints : PropertyAttribute

@@ -1,7 +1,6 @@
 ﻿using pvs.logic.playground.isometric;
 using UnityEngine;
-
-namespace pvs.logic.playground.state {
+namespace pvs.logic.playground {
 
 	public interface IPlaygroundInitialState {
 
