@@ -1,9 +1,10 @@
+using pvs.logic.playground.isometric;
 using pvs.settings.debug;
 using pvs.utils.code;
 using UnityEngine;
 namespace pvs.logic.playground.state {
 
-	[VComponent]
+	[ZenjectComponent]
 	public class PlaygroundInitialState : IPlaygroundInitialState {
 		public Vector2 terrainSize { get; }
 		public GameObject terrainElementPrefab { get; }
@@ -13,6 +14,7 @@ namespace pvs.logic.playground.state {
 		public Color isometricGridDefaultColor { get; }
 		public Color isometricGridSelectedColor { get; }
 		public bool showDebugGrid { get; }
+		public IIsometricInfo isometricInfo { get; }
 
 		public PlaygroundInitialState(DebugSettings debugSettings) {
 			terrainSize = debugSettings.terrainSize;
@@ -22,6 +24,7 @@ namespace pvs.logic.playground.state {
 			isometricGridDefaultColor = debugSettings.isometricGridDefaultColor;
 			isometricGridSelectedColor = debugSettings.isometricGridSelectedColor;
 			showDebugGrid = debugSettings.showDebugGrid;
+			isometricInfo = new IsometricInfo(this);
 		}
 	}
 }

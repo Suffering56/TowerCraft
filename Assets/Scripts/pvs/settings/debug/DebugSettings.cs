@@ -1,13 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
-using pvs.attribute;
+using pvs.logic.playground.isometric;
 using pvs.logic.playground.state;
 using pvs.utils.code;
+using pvs.value;
 using UnityEngine;
 
 namespace pvs.settings.debug {
 
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	[VComponent]
+	[ZenjectComponent]
 	public class DebugSettings : MonoBehaviour, IPlaygroundInitialState {
 
 		[SerializeField]
@@ -60,6 +61,8 @@ namespace pvs.settings.debug {
 		private KeyCode _cameraStopKey = KeyCode.E;
 
 		public KeyCode cameraStopKey => _cameraStopKey;
+		
+		public IIsometricInfo isometricInfo => new IsometricInfo(this);
 
 		private void OnValidate() {
 			GetComponent<DebugSettingsManager>().triggerRefresh = true;

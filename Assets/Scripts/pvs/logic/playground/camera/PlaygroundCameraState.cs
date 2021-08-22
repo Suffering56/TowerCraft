@@ -1,10 +1,10 @@
-﻿using pvs.attribute;
-using pvs.settings.debug;
+﻿using pvs.settings.debug;
 using pvs.utils.code;
+using pvs.value;
 using UnityEngine;
 namespace pvs.logic.playground.camera {
 
-	[VComponent]
+	[ZenjectComponent]
 	public class PlaygroundCameraState : IPlaygroundCameraState, IPlaygroundCameraInitialState {
 
 		public float cameraMoveSpeed { get; }

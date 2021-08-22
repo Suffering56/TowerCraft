@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using pvs.logic.playground.isometric;
+using UnityEngine;
 
 namespace pvs.logic.playground.state {
 
@@ -11,5 +12,6 @@ namespace pvs.logic.playground.state {
 		public Color isometricGridDefaultColor { get; }
 		public Color isometricGridSelectedColor { get; }
 		public bool showDebugGrid { get; }
+		public IIsometricInfo isometricInfo { get; }
 	}
 }

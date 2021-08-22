@@ -7,7 +7,7 @@ namespace pvs.logic.playground.state.building {
 
 	public class BuildingsViewController : MonoBehaviour {
 
-		[Inject] private IPlaygroundState playgroundState;
+		[Inject] private IBuildingsState buildingsState;
 
 		private Camera playgroundCamera;
 		private IBuildingState underConstructionBuilding;
@@ -31,6 +31,7 @@ namespace pvs.logic.playground.state.building {
 					FinishBuildingProcess();
 				} else {
 					var mousePosition = GetMouseWorldPosition();
+					//TODO
 					underConstructionBuilding.instanceGameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
 				}
 			}
@@ -40,11 +41,11 @@ namespace pvs.logic.playground.state.building {
 		}
 
 		private void StartBuildingProcess(Vector3 mousePosition) {
-			underConstructionBuilding = playgroundState.CreateBuilding(BuildingType.BARRACKS, mousePosition, transform);
+			underConstructionBuilding = buildingsState.CreateBuilding(BuildingType.BARRACKS, mousePosition, transform);
 		}
 
 		private void FinishBuildingProcess() {
-			playgroundState.FinishBuild(underConstructionBuilding);
+			buildingsState.FinishBuild(underConstructionBuilding);
 			underConstructionBuilding = null;
 		}
 
