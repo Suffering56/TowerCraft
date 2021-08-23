@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using pvs.utils.code;
 using UnityEngine;
-namespace pvs.logic.playground.state.building.settings {
+namespace pvs.logic.playground.building.settings {
 
 	[ZenjectComponent]
 	public class BuildingsSettings : IBuildingsSettings {

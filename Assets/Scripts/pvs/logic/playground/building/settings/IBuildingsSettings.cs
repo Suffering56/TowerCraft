@@ -1,4 +1,4 @@
-﻿namespace pvs.logic.playground.state.building.settings {
+﻿namespace pvs.logic.playground.building.settings {
 	
 	public interface IBuildingsSettings {
 

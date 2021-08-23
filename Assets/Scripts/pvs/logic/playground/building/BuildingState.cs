@@ -1,7 +1,8 @@
 ﻿using System;
-using pvs.logic.playground.state.building.settings;
+using pvs.logic.playground.building.settings;
 using UnityEngine;
-namespace pvs.logic.playground.state.building {
+
+namespace pvs.logic.playground.building {
 
 	public class BuildingState : IBuildingState {
 
@@ -10,7 +11,6 @@ namespace pvs.logic.playground.state.building {
 		public int id { get; private set; } = UNFINISHED; // идентификатор здания
 		public Vector2 gridPosition { get; private set; } // где построено здание (в какой клетке)
 		public IBuildingSettings settings { get; }        // настройки
-
 		public GameObject instanceGameObject { get; }
 
 		public BuildingState(IBuildingSettings settings, GameObject objectLink) {

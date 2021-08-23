@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\pvs\settings\debug\DebugSettings.cs" />
-     <Compile Include="Assets\Scripts\pvs\logic\playground\building\BuildingsState.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\building\PlaygroundBuildingsState.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\isometric\IsometricGridGeneratorComponent.cs" />
      <Compile Include="Assets\Scripts\pvs\settings\debug\DebugSettingsManager.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\PlaygroundInitialState.cs" />
@@ -53,7 +53,7 @@
      <Compile Include="Assets\Scripts\pvs\logic\playground\building\BuildingState.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\building\settings\BuildingsSettings.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\camera\IPlaygroundCameraInitialState.cs" />
-     <Compile Include="Assets\Scripts\pvs\logic\playground\building\IBuildingsState.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\building\IPlaygroundBuildingsState.cs" />
      <Compile Include="Assets\Scripts\pvs\utils\VUnityUtils.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\building\settings\IBuildingSettings.cs" />
      <Compile Include="Assets\Scripts\pvs\ProjectContextInstaller.cs" />

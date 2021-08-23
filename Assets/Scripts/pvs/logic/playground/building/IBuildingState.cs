@@ -1,6 +1,6 @@
-﻿using pvs.logic.playground.state.building.settings;
+﻿using pvs.logic.playground.building.settings;
 using UnityEngine;
-namespace pvs.logic.playground.state.building {
+namespace pvs.logic.playground.building {
 	
 	public interface IBuildingState {
 		public int id { get; }						// идентификатор здания

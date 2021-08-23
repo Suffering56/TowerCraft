@@ -2,11 +2,11 @@ using System;
 using System.Linq;
 using ModestTree;
 using pvs.logic.playground;
+using pvs.logic.playground.building;
+using pvs.logic.playground.building.settings;
 using pvs.logic.playground.camera;
-using pvs.logic.playground.state;
-using pvs.logic.playground.state.building;
-using pvs.logic.playground.state.building.settings;
 using pvs.settings.debug;
+using pvs.utils;
 using pvs.utils.code;
 using UnityEngine;
 using Zenject;
@@ -16,14 +16,35 @@ namespace pvs {
 	public class ProjectContextInstaller : MonoInstaller {
 
 		// ReSharper disable Unity.PerformanceAnalysis
+
 		public override void InstallBindings() {
 			Debug.Log($"{GetType().Name}.InstallBindings()");
 
 			BindDebugSettings();
 			BindPlaygroundCameraDependencies();
 			BindPlaygroundDependencies();
-		}
 
+			// float yDiff = 1.82f - 0.125f;
+			// float xDiff = 1.2f - 0.25f;
+			
+			float x = -3.8f; // + 0.25f;
+			float y = 3.18f; //+ 0.125f;
+
+			var mousePos = new Vector2(x, y);
+
+			var mayBeNearest = new Vector2(
+				VMath.RoundTo(mousePos.x, 0.5f),
+				VMath.RoundTo(mousePos.y, 0.25f)
+			);
+
+			var direction = mayBeNearest - mousePos;
+			direction = new Vector2(Math.Sign(direction.x), Math.Sign(direction.y));
+
+			var candidate2 = new Vector2(
+				direction.x * 0.25f,
+				direction.y * 0.125f
+			);
+		}
 		private void BindDebugSettings() {
 			Bind<DebugSettings>()
 				.FromComponentOn(GameObject.Find("DebugSettingsView"))
@@ -39,7 +60,7 @@ namespace pvs {
 			BindInterfacesAndSelfTo<PlaygroundInitialState>()
 				.AsSingle();
 
-			BindInterfacesAndSelfTo<BuildingsState>()
+			BindInterfacesAndSelfTo<PlaygroundBuildingsState>()
 				.AsSingle();
 
 			BindInterfacesAndSelfTo<BuildingsSettings>()

@@ -19,3 +19,8 @@
 - settings -> immutable настройки, прочитанные из json
 - debugSettings -> настройки, позволяющие удобно менять сцену в onDrawGizmos (класс, который использует эти настройки, обязан подписаться на IDebugSettingsRefreshListener, а его родительский gameObject должен быть добавлен в DebugSettingsManager.ObservableGameObjects)
 - settingsState-> пользовательские настройки (которые игрок выставил в меню настроек)
+
+
+
+- пивот здания = bottom center
+- пивот gridElement = top left
