@@ -11,9 +11,10 @@ namespace pvs.logic.playground.building {
 		[Inject] private readonly IPlaygroundBuildingsState playgroundBuildingsState;
 
 		private Camera playgroundCamera;
-		private IBuildingState underConstructionBuilding;
-		private IsometricGridPosition prevNearestGrid;
+		private GameObject underConstructionBuilding;
 		private float buildingYOffset;
+
+		private static int counter = 0;
 
 		private void Start() {
 			playgroundCamera = Camera.main;
@@ -23,7 +24,7 @@ namespace pvs.logic.playground.building {
 
 		private void Update() {
 			if (Input.GetKeyUp(Constants.BUILDING_MODE_KEY)) {
-				if (underConstructionBuilding == null) {
+				if (!underConstructionBuilding) {
 					StartBuildingProcess();
 				} else {
 					CancelBuildingProcess();
@@ -31,36 +32,28 @@ namespace pvs.logic.playground.building {
 				return;
 			}
 
-			if (underConstructionBuilding != null) {
+			if (underConstructionBuilding) {
+				var nearest = FindNearestCenterGridPoint();
+				underConstructionBuilding.transform.position = new Vector3(nearest.x, nearest.y + buildingYOffset, transform.position.z);
+
+				if (nearest == Constants.NULL_VECTOR_2) {
+					playgroundBuildingsState.UpdateUnderCursorPoint(null);
+					return;
+				}
+
+				var nearestGrid = playgroundInitialState.isometricInfo.ConvertToGridPosition(nearest);
+
 				if (Input.GetKeyUp(Constants.FINISH_BUILD_KEY)) {
-					FinishBuildingProcess();
+					FinishBuildingProcess(nearestGrid);
 				} else {
-					bool found = TryFindNearestCenterGridPoint(out var nearest);
-					if (!found) return;
-
-					underConstructionBuilding.instanceGameObject.transform.position = new Vector3(nearest.x, nearest.y + buildingYOffset, transform.position.z);
-					var nearestGrid = playgroundInitialState.isometricInfo.ConvertToGridPosition(nearest);
-
-					if (!Equals(prevNearestGrid, nearestGrid)) {
-						playgroundBuildingsState.SetSelected(prevNearestGrid, false);
-						playgroundBuildingsState.SetSelected(nearestGrid, true);
-						prevNearestGrid = nearestGrid;
-					}
+					playgroundBuildingsState.UpdateUnderCursorPoint(nearestGrid);
 				}
 			}
 		}
 
-		private bool TryFindNearestCenterGridPoint(out Vector2 successResult) {
+		private Vector2 FindNearestCenterGridPoint() {
 			var mousePosition = GetMouseWorldPosition();
-			var nearest = playgroundInitialState.isometricInfo.GetNearestGridElementCenter(mousePosition);
-
-			if (nearest.HasValue) {
-				successResult = nearest.Value;
-				return true;
-			}
-
-			successResult = Vector2.positiveInfinity;
-			return false;
+			return playgroundInitialState.isometricInfo.GetNearestGridElementCenter(mousePosition) ?? Constants.NULL_VECTOR_2;
 		}
 
 		private Vector3 GetMouseWorldPosition() {
@@ -70,25 +63,27 @@ namespace pvs.logic.playground.building {
 		private void StartBuildingProcess() {
 			var mousePosition = GetMouseWorldPosition();
 
-			var building = playgroundBuildingsState.CreateBuilding(BuildingType.BARRACKS);
-			building.instanceGameObject.transform.parent = transform;
-			building.instanceGameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y + buildingYOffset, transform.position.z);
+			var buildingGameObject = playgroundBuildingsState.StartBuildingProcess(counter++ % 2 == 0 ? BuildingType.BARRACKS : BuildingType.LARGE_BARRACKS);
+			buildingGameObject.transform.parent = transform;
+			buildingGameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y + buildingYOffset, transform.position.z);
 
-			underConstructionBuilding = building;
+			underConstructionBuilding = buildingGameObject;
 		}
 
-		private void FinishBuildingProcess() {
-			playgroundBuildingsState.FinishBuild(underConstructionBuilding);
-			underConstructionBuilding = null;
-			prevNearestGrid = null;
+		private void FinishBuildingProcess(IsometricGridPosition finalBuildingPosition) {
+			bool success = playgroundBuildingsState.FinishBuildProcess(finalBuildingPosition);
+			if (success) {
+				underConstructionBuilding = null;
+			}
 		}
 
 		private void CancelBuildingProcess() {
-			var buildingView = underConstructionBuilding.instanceGameObject;
+			playgroundBuildingsState.CancelBuildProcess();
+
+			underConstructionBuilding.SetActive(false);
+			DestroyImmediate(underConstructionBuilding);
+
 			underConstructionBuilding = null;
-			buildingView.SetActive(false);
-			DestroyImmediate(buildingView);
-			prevNearestGrid = null;
 		}
 	}
 }

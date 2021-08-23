@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using pvs.logic.playground.isometric;
 using pvs.utils.code;
-using UnityEngine;
 namespace pvs.logic.playground.building.settings {
 
 	[ZenjectComponent]
@@ -8,14 +8,20 @@ namespace pvs.logic.playground.building.settings {
 
 		private readonly Dictionary<BuildingType, BuildingSettings> buildings;
 
+		private static readonly IsometricGridPosition[] LARGE_BUILDING_OFFSETS = {
+			new IsometricGridPosition(-1, -1),
+			new IsometricGridPosition(1, -1),
+			new IsometricGridPosition(0, -2),
+		};
+
 		public BuildingsSettings() {
 			buildings = ReadSettings();
 		}
 
 		private Dictionary<BuildingType, BuildingSettings> ReadSettings() {
 			return new Dictionary<BuildingType, BuildingSettings> {
-				[BuildingType.BARRACKS] = new BuildingSettings(BuildingType.BARRACKS, "Barracks", new List<Vector2>()),
-				[BuildingType.LARGE_BARRACKS] = new BuildingSettings(BuildingType.LARGE_BARRACKS, "LargeBarracks", new List<Vector2>())
+				[BuildingType.BARRACKS] = new BuildingSettings(BuildingType.BARRACKS, "Barracks"),
+				[BuildingType.LARGE_BARRACKS] = new BuildingSettings(BuildingType.LARGE_BARRACKS, "LargeBarracks", LARGE_BUILDING_OFFSETS)
 			};
 		}
 

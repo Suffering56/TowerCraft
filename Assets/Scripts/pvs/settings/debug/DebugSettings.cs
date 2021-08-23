@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using pvs.attribute;
 using pvs.logic.playground;
+using pvs.logic.playground.building;
 using pvs.logic.playground.isometric;
 using pvs.utils.code;
 using UnityEngine;
@@ -35,12 +37,11 @@ namespace pvs.settings.debug {
 		public bool showDebugGrid => _showDebugGrid;
 
 		[SerializeField]
-		private Color _isometricGridDefaultColor = new Color(1, 1, 1, 0.5f);
-		public Color isometricGridDefaultColor => _isometricGridDefaultColor;
-
+		private Color _isometricGridDefaultColor = new Color(1, 1, 1, 0.2f);
 		[SerializeField]
-		private Color _isometricGridSelectedColor = new Color(1, 0, 0, 0.5f);
-		public Color isometricGridSelectedColor => _isometricGridSelectedColor;
+		private Color _isometricGridAvailableColor = new Color(0, 1, 0, 0.2f);
+		[SerializeField]
+		private Color _isometricGridUnavailableColor = new Color(1, 0, 0, 0.2f);
 
 		[SpaceAttribute(20)]
 		[Range(0.01f, 10f)]
@@ -61,8 +62,17 @@ namespace pvs.settings.debug {
 		private KeyCode _cameraStopKey = KeyCode.E;
 
 		public KeyCode cameraStopKey => _cameraStopKey;
-		
+
 		public IIsometricInfo isometricInfo => new IsometricInfo(this);
+
+		public Color GetIsometricGridColor(GridPointStatus status) {
+			return status switch {
+				GridPointStatus.NONE => _isometricGridDefaultColor,
+				GridPointStatus.AVAILABLE_FOR_BUILD => _isometricGridAvailableColor,
+				GridPointStatus.UNAVAILABLE_FOR_BUILD => _isometricGridUnavailableColor,
+				_ => throw new Exception($"Unsupported {nameof(GridPointStatus)} value: {status}")
+			};
+		}
 
 		private void OnValidate() {
 			GetComponent<DebugSettingsManager>().triggerRefresh = true;

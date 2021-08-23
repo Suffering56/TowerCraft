@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using pvs.logic.playground.isometric;
 using UnityEngine;
 namespace pvs.logic.playground.building.settings {
 
@@ -8,11 +9,11 @@ namespace pvs.logic.playground.building.settings {
 
 		public BuildingType buildingType { get; }
 		public Object prefab { get; }
-		public IReadOnlyList<Vector2> offsetPoints { get; }
+		public IReadOnlyList<IsometricGridPosition> offsetPoints { get; }
 
-		public BuildingSettings(BuildingType buildingType, string buildingPrefabName, IReadOnlyList<Vector2> offsetPoints) {
+		public BuildingSettings(BuildingType buildingType, string buildingPrefabName, params IsometricGridPosition[] offsetPoints) {
 			this.buildingType = buildingType;
-			this.prefab = Resources.Load(PREFIX + buildingPrefabName);
+			prefab = Resources.Load(PREFIX + buildingPrefabName);
 			this.offsetPoints = offsetPoints;
 		}
 	}

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
+
 namespace pvs.logic.playground.isometric {
 
 	public class IsometricGridElementController : MonoBehaviour, IPointerClickHandler {
@@ -10,10 +11,10 @@ namespace pvs.logic.playground.isometric {
 		[Inject] private IPlaygroundBuildingsState playgroundBuildingsState;
 
 		private SpriteRenderer spriteRenderer;
-		
+
 		public IsometricGridPosition position { get; private set; }
 
-		private bool selected;
+		private GridPointStatus status = GridPointStatus.NONE;
 		private bool isEditor => initialState == null;
 
 		private void Awake() {
@@ -21,10 +22,11 @@ namespace pvs.logic.playground.isometric {
 		}
 
 		private void Update() {
-			var isSelected = playgroundBuildingsState.IsSelected(position);
-			if (isSelected != selected) {
-				selected = isSelected;
-				SwitchColor();
+			var newStatus = playgroundBuildingsState.GetGridPointStatus(position);
+
+			if (status != newStatus) {
+				status = newStatus;
+				spriteRenderer.color = initialState.GetIsometricGridColor(status);
 			}
 		}
 
@@ -37,20 +39,12 @@ namespace pvs.logic.playground.isometric {
 				name += ".Debug";
 			}
 
-			spriteRenderer.color = initialState.isometricGridDefaultColor;
+			spriteRenderer.color = initialState.GetIsometricGridColor(GridPointStatus.NONE);
 			spriteRenderer.sortingOrder = position.y;
 		}
 
 		public void OnPointerClick(PointerEventData eventData) {
-			selected = !selected;
-			SwitchColor();
 			Debug.Log($"OnMouseClick: {name}");
-		}
-		
-		private void SwitchColor() {
-			spriteRenderer.color = selected
-				? initialState.isometricGridSelectedColor
-				: initialState.isometricGridDefaultColor;
 		}
 	}
 }

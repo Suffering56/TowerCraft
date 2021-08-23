@@ -1,4 +1,5 @@
-﻿using pvs.logic.playground.isometric;
+﻿using pvs.logic.playground.building;
+using pvs.logic.playground.isometric;
 using UnityEngine;
 namespace pvs.logic.playground {
 
@@ -8,8 +9,7 @@ namespace pvs.logic.playground {
 		public GameObject terrainElementPrefab { get; }
 		public float isometricGridHeight { get; }
 		public float isometricGridWidth { get; }
-		public Color isometricGridDefaultColor { get; }
-		public Color isometricGridSelectedColor { get; }
+		public Color GetIsometricGridColor(GridPointStatus status);
 		public bool showDebugGrid { get; }
 		public IIsometricInfo isometricInfo { get; }
 	}

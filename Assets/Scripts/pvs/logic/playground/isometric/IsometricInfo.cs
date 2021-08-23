@@ -58,8 +58,7 @@ namespace pvs.logic.playground.isometric {
 			float distanceToFirstGridCenterX = gridCenterWorldPosition.x - (zeroWorldPoint.x + minWorldStep.x);
 			float distanceToFirstGridCenterY = (zeroWorldPoint.y - minWorldStep.y) - gridCenterWorldPosition.y;
 
-			var gridX = (int)(distanceToFirstGridCenterX / minWorldStep.x);
-			gridX /= 2;
+			int gridX = (int)(distanceToFirstGridCenterX / minWorldStep.x);
 			var gridY = (int)(distanceToFirstGridCenterY / minWorldStep.y);
 
 			return new IsometricGridPosition(gridX, gridY);
@@ -87,7 +86,7 @@ namespace pvs.logic.playground.isometric {
 			if (IsOutOfGrid(nearest)) return null;
 			return nearest;
 		}
-		
+
 		private bool IsOutOfGrid(Vector2 nearest) {
 			if (nearest.x < zeroWorldPoint.x + minWorldStep.x) {
 				return true;
@@ -127,6 +126,7 @@ namespace pvs.logic.playground.isometric {
 				float worldX = zeroWorldPoint.x;
 
 				if (gridPosY % 2 == 1) {
+					gridPosX++;
 					worldX += minWorldStep.x;
 				}
 
@@ -139,7 +139,7 @@ namespace pvs.logic.playground.isometric {
 					);
 
 					worldX += elementSize.x;
-					gridPosX++;
+					gridPosX += 2;
 				}
 
 				worldY -= minWorldStep.y;

@@ -1,15 +1,24 @@
-﻿using pvs.logic.playground.building.settings;
+﻿using JetBrains.Annotations;
+using pvs.logic.playground.building.settings;
 using pvs.logic.playground.isometric;
+using UnityEngine;
 namespace pvs.logic.playground.building {
 
 	public interface IPlaygroundBuildingsState {
 
-		public void FinishBuild(IBuildingState underConstructionBuilding);
+		public GameObject StartBuildingProcess(BuildingType type);
 
-		public IBuildingState CreateBuilding(BuildingType type);
+		public bool FinishBuildProcess(IsometricGridPosition finalBuildingPosition);
+		public void CancelBuildProcess();
 
-		bool IsSelected(IsometricGridPosition position);
+		public void UpdateUnderCursorPoint([CanBeNull] IsometricGridPosition newUnderCursorGridPoint);
 
-		public void SetSelected(IsometricGridPosition position, bool selected);
+		GridPointStatus GetGridPointStatus(IsometricGridPosition checkedPoint);
+	}
+
+	public enum GridPointStatus {
+		NONE,
+		AVAILABLE_FOR_BUILD,
+		UNAVAILABLE_FOR_BUILD
 	}
 }
