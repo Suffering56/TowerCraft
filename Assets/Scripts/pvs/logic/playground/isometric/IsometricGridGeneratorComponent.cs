@@ -8,21 +8,21 @@ namespace pvs.logic.playground.isometric {
 
 	public class IsometricGridGeneratorComponent : MonoBehaviour, IDebugSettingsRefreshListener {
 
-		[SerializeField]
-		private GameObject gridElementPrefab;
+		[SerializeField] private GameObject gridElementPrefab;
 
 		[Inject] private DiContainer container;
 		[Inject] private IPlaygroundInitialState initialState;
+
 		private IBuildingState underConstructionBuilding;
 		private bool buildingModeEnabled = false;
 
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState ??= debugSettings;
-			DrawBuildingModeGrid(debugSettings.buildingModeEnabled);
+			RedrawBuildingModeGrid(debugSettings.buildingModeEnabled);
 		}
 
 		private void Start() {
-			DrawBuildingModeGrid(false);
+			RedrawBuildingModeGrid(false);
 		}
 
 		private void Update() {
@@ -33,11 +33,11 @@ namespace pvs.logic.playground.isometric {
 			} else {
 				return;
 			}
-			DrawBuildingModeGrid(buildingModeEnabled);
+			RedrawBuildingModeGrid(buildingModeEnabled);
 		}
 
 
-		private void DrawBuildingModeGrid(bool enabled) {
+		private void RedrawBuildingModeGrid(bool enabled) {
 			VUnityUtils.CleanChildren(transform);
 			if (!enabled) return;
 

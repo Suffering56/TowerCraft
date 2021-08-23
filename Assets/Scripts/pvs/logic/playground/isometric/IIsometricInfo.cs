@@ -11,8 +11,8 @@ namespace pvs.logic.playground.isometric {
 		 */
 		public delegate void GridElementConsumer(Vector2 worldPivotPosition, IsometricGridPosition gridPosition, Vector3 elementScale);
 
-		public IsometricGridPosition GetNearestGrid(Vector2 mouseWorldPosition);
+		public IsometricGridPosition ConvertToGridPosition(Vector2 mouseWorldPosition);
 
-		public Vector2 GetNearestWorldPoint(Vector2 mouseWorldPosition);
+		public Vector2? GetNearestGridElementCenter(Vector2 mouseWorldPosition);
 	}
 }

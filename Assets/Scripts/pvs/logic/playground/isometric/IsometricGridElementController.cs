@@ -8,11 +8,17 @@ namespace pvs.logic.playground.isometric {
 
 		[Inject] private IPlaygroundInitialState initialState;
 		[Inject] private IPlaygroundBuildingsState playgroundBuildingsState;
+
+		private SpriteRenderer spriteRenderer;
 		
 		public IsometricGridPosition position { get; private set; }
 
 		private bool selected;
 		private bool isEditor => initialState == null;
+
+		private void Awake() {
+			spriteRenderer = GetComponent<SpriteRenderer>();
+		}
 
 		private void Update() {
 			var isSelected = playgroundBuildingsState.IsSelected(position);
@@ -31,13 +37,8 @@ namespace pvs.logic.playground.isometric {
 				name += ".Debug";
 			}
 
-			var spriteRenderer = GetSpriteRenderer();
 			spriteRenderer.color = initialState.isometricGridDefaultColor;
 			spriteRenderer.sortingOrder = position.y;
-		}
-
-		private SpriteRenderer GetSpriteRenderer() {
-			return GetComponent<SpriteRenderer>();
 		}
 
 		public void OnPointerClick(PointerEventData eventData) {
@@ -45,8 +46,9 @@ namespace pvs.logic.playground.isometric {
 			SwitchColor();
 			Debug.Log($"OnMouseClick: {name}");
 		}
+		
 		private void SwitchColor() {
-			GetSpriteRenderer().color = selected
+			spriteRenderer.color = selected
 				? initialState.isometricGridSelectedColor
 				: initialState.isometricGridDefaultColor;
 		}

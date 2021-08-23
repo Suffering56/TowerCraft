@@ -1,6 +1,5 @@
 ﻿using System;
 using pvs.utils;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace pvs.logic.playground.isometric {
@@ -17,18 +16,12 @@ namespace pvs.logic.playground.isometric {
 		// localScale gameObject-а элемента сетки
 		private readonly Vector3 elementScale;
 
-		// внутренний отступ от границы terrain-а до изометрической сетки
-		// если размер terrain-а делится на размер элемента сетки без остатка то innerOffset будет нулевым
-		private readonly Vector2 innerOffset;
-
 		// координаты левого верхнего угла в мировом пространстве (относительно parent-а ессно), в котором будет отрисован первый элемент [0,0]
 		// при учете что пивот isometricGridSprite находится в левом верхнем углу (top-left)
 		private readonly Vector2 zeroWorldPoint;
 
 		// минимальный размер прямоугольника, в который можно обернуть изометрический ромб
 		private readonly Vector2 elementSize;
-
-		private readonly Vector2 gridSize;
 
 
 		public IsometricInfo(IPlaygroundInitialState parent) {
@@ -48,7 +41,9 @@ namespace pvs.logic.playground.isometric {
 				(int)(terrainSize.y / elementSize.y)
 			);
 
-			innerOffset = new Vector2(
+			// внутренний отступ от границы terrain-а до изометрической сетки
+			// если размер terrain-а делится на размер элемента сетки без остатка то innerOffset будет нулевым
+			var innerOffset = new Vector2(
 				(terrainSize.x - maxElementsCount.x * elementSize.x) / 2,
 				(terrainSize.y - maxElementsCount.y * elementSize.y) / 2
 			);
@@ -57,37 +52,20 @@ namespace pvs.logic.playground.isometric {
 				-terrainSize.x / 2 + innerOffset.x,
 				terrainSize.y / 2 - innerOffset.y
 			);
-
-			gridSize = new Vector2(
-				terrainSize.x - innerOffset.x * 2,
-				terrainSize.y - innerOffset.y * 2
-			);
 		}
 
-		public IsometricGridPosition GetNearestGrid(Vector2 mouseWorldPosition) {
-			// -3.8, 3.18
-			// float xDiff = mouseWorldPosition.x - (zeroWorldPoint.x + minWorldStep.x);	// 0.95           // 3.8
-			// float yDiff = (zeroWorldPoint.y - minWorldStep.y) - mouseWorldPosition.y;	// 1.695          // 13.56   
+		public IsometricGridPosition ConvertToGridPosition(Vector2 gridCenterWorldPosition) {
+			float distanceToFirstGridCenterX = gridCenterWorldPosition.x - (zeroWorldPoint.x + minWorldStep.x);
+			float distanceToFirstGridCenterY = (zeroWorldPoint.y - minWorldStep.y) - gridCenterWorldPosition.y;
 
-			// float xDiff = mouseWorldPosition.x - zeroWorldPoint.x; // 1.2
-			// float yDiff = zeroWorldPoint.y - mouseWorldPosition.y; // 1.82
-			//
-			// float xGrid = xDiff / minWorldStep.x;
-			// float yGrid = yDiff / minWorldStep.y;
-			// bool odd = xGrid % 2 == 1;
-			// xGrid /= 2;
-
-			// int yGrid = (int)(yDiff / minWorldStep.y);
-
-			var nearest = GetNearestWorldPoint(mouseWorldPosition);
-
-			var gridX = (int)(nearest.x / minWorldStep.x);
+			var gridX = (int)(distanceToFirstGridCenterX / minWorldStep.x);
 			gridX /= 2;
-			var gridY = (int)(nearest.y / minWorldStep.y);
+			var gridY = (int)(distanceToFirstGridCenterY / minWorldStep.y);
 
 			return new IsometricGridPosition(gridX, gridY);
 		}
-		public Vector2 GetNearestWorldPoint(Vector2 mouseWorldPosition) {
+
+		public Vector2? GetNearestGridElementCenter(Vector2 mouseWorldPosition) {
 			var candidate1 = new Vector2(
 				VMath.RoundTo(mouseWorldPosition.x, elementSize.x),
 				VMath.RoundTo(mouseWorldPosition.y, elementSize.y)
@@ -99,25 +77,41 @@ namespace pvs.logic.playground.isometric {
 				candidate1.y - Math.Sign(distance1.y) * minWorldStep.y
 			);
 
-			var distance2 = candidate2 - mouseWorldPosition;
+			var flattenDistance1 = FlattenDistance(distance1);
+			var flattenDistance2 = FlattenDistance(candidate2 - mouseWorldPosition);
 
-			Vector2 nearest = distance1.sqrMagnitude <= distance2.sqrMagnitude ? candidate1 : candidate2;
+			var nearest = flattenDistance1.sqrMagnitude <= flattenDistance2.sqrMagnitude
+				? candidate1
+				: candidate2;
 
-			bool isFirstCandidateBetter = distance1.sqrMagnitude <= distance2.sqrMagnitude;
+			if (IsOutOfGrid(nearest)) return null;
+			return nearest;
+		}
+		
+		private bool IsOutOfGrid(Vector2 nearest) {
+			if (nearest.x < zeroWorldPoint.x + minWorldStep.x) {
+				return true;
+			}
+			if (nearest.x > maxWorldX + minWorldStep.x) {
+				return true;
+			}
+			if (nearest.y > zeroWorldPoint.y - minWorldStep.y) {
+				return true;
+			}
+			if (nearest.y < minWorldY + minWorldStep.x) {
+				return true;
+			}
+			return false;
+		}
 
-			Debug.DrawLine(
-				new Vector3(candidate1.x, candidate1.y, 0),
-				new Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 0),
-				isFirstCandidateBetter ? Color.red : Color.white
-			);
-
-			Debug.DrawLine(
-				new Vector3(candidate2.x, candidate2.y, 0),
-				new Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 0),
-				!isFirstCandidateBetter ? Color.red : Color.white
-			);
-
-			return new Vector2(nearest.x, nearest.y - minWorldStep.y);
+		/*
+		 * для того чтобы каждая точка внутри изометрического ромбика указывала на его центр, а не на соседний
+		 * а такое было бы возможно - ибо изометрическая проекция искажает физическое расстояние между объектами
+		 * по идее изометрический ромб - это повернутый под определенным углом квадрат
+		 * и соответственно расстояние нужно измерять так словно мы имеем дело с квадратами
+		 */
+		private static Vector2 FlattenDistance(Vector2 distance) {
+			return new Vector2(distance.x / 2, distance.y);
 		}
 
 		public void IterateAllElements(IIsometricInfo.GridElementConsumer gridElementConsumer) {
