@@ -15,24 +15,20 @@ namespace pvs.logic.playground.building {
 		public IsometricGridPosition gridPosition { get; private set; } // где построено здание (в какой клетке)
 		public IBuildingSettings settings { get; }                      // настройки
 		public GameObject instanceGameObject { get; }
-		public System.Collections.Generic.ISet<IsometricGridPosition> moreBusyGridPoints { get; private set; }
 
 		public BuildingState(IBuildingSettings settings, GameObject objectLink) {
-			id = id;
 			this.settings = settings;
 			instanceGameObject = objectLink;
 		}
 
 		public void FinishBuild(int id, IsometricGridPosition gridPosition) {
-			if (this.id == 0) throw new Exception($"building({this.id}) process with already finished");
-			this.id = id;
-			instanceGameObject.name += $"[{id}]";
+			if (this.id != UNFINISHED) {
+				throw new Exception($"building({this.id}) process with already finished");
+			}
 
+			this.id = id;
 			this.gridPosition = gridPosition;
-			moreBusyGridPoints = settings
-			                     .offsetPoints
-			                     .Select(offset => gridPosition + offset)
-			                     .ToHashSet();
+			instanceGameObject.name += $"[{id}]";
 		}
 	}
 }

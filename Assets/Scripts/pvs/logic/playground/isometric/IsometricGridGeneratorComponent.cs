@@ -12,35 +12,35 @@ namespace pvs.logic.playground.isometric {
 
 		[Inject] private DiContainer container;
 		[Inject] private IPlaygroundInitialState initialState;
-
-		private IBuildingState underConstructionBuilding;
-		private bool buildingModeEnabled = false;
+		[Inject] private IPlaygroundBuildingsState playgroundBuildingsState;
+		private bool buildingModeEnabled;
 
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState ??= debugSettings;
-			RedrawBuildingModeGrid(debugSettings.buildingModeEnabled);
+			
+			if (debugSettings.buildingModeEnabled) {
+				DrawBuildingModeGrid();
+			} else {
+				VUnityUtils.CleanChildren(transform);
+			}
 		}
 
 		private void Start() {
-			RedrawBuildingModeGrid(false);
+			VUnityUtils.CleanChildren(transform);
 		}
 
 		private void Update() {
-			if (Input.GetKeyUp(Constants.BUILDING_MODE_KEY)) {
-				buildingModeEnabled = !buildingModeEnabled;
-			} else if (Input.GetKeyUp(Constants.FINISH_BUILD_KEY)) {
-				buildingModeEnabled = false;
-			} else {
-				return;
+			if (buildingModeEnabled != playgroundBuildingsState.buildingModeEnabled) {
+				buildingModeEnabled = playgroundBuildingsState.buildingModeEnabled;
+				if (buildingModeEnabled) {
+					DrawBuildingModeGrid();
+				} else {
+					VUnityUtils.CleanChildren(transform);
+				}
 			}
-			RedrawBuildingModeGrid(buildingModeEnabled);
 		}
 
-
-		private void RedrawBuildingModeGrid(bool enabled) {
-			VUnityUtils.CleanChildren(transform);
-			if (!enabled) return;
-
+		private void DrawBuildingModeGrid() {
 			initialState.isometricInfo.IterateAllElements(InstantiateGridBlock);
 		}
 

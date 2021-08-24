@@ -27,6 +27,7 @@ namespace pvs.logic.playground.building {
 
 		private IBuildingState underConstructionBuilding;
 		private IsometricGridPosition underCursorPoint;
+		public bool buildingModeEnabled => underConstructionBuilding != null;
 
 		public PlaygroundBuildingsState([Inject] IPlaygroundInitialState playgroundInitialState) {
 			if (Math.Abs(playgroundInitialState.isometricGridHeight - ORIGIN_ISOMETRIC_GRID_SIZE_IN_WORLD_UNITS.y) > 0.001f) {
@@ -52,15 +53,23 @@ namespace pvs.logic.playground.building {
 		}
 
 		public bool FinishBuildProcess(IsometricGridPosition finalBuildingPosition) {
-			// TODO
-			
-			underConstructionBuilding.FinishBuild(buildingIdGenerator++, finalBuildingPosition);
+			var allBuildingPositions = Enumerable
+			                           .Repeat(finalBuildingPosition, 1)
+			                           .Concat(underConstructionBuilding
+			                                   .settings
+			                                   .offsetPoints
+			                                   .Select(offset => finalBuildingPosition + offset)
+			                           ).ToList();
 
-			buildingsPoints.Add(finalBuildingPosition, underConstructionBuilding);
-			foreach (var point in underConstructionBuilding.moreBusyGridPoints) {
+			if (buildingsPoints.Keys.Intersect(allBuildingPositions).Any()) {
+				return false;
+			}
+
+			foreach (var point in allBuildingPositions) {
 				buildingsPoints.Add(point, underConstructionBuilding);
 			}
-			
+
+			underConstructionBuilding.FinishBuild(buildingIdGenerator++, finalBuildingPosition);
 			CancelBuildProcess();
 			return true;
 		}
@@ -79,19 +88,7 @@ namespace pvs.logic.playground.building {
 				return GridPointStatus.NONE;
 			}
 
-			if (Equals(checkedPoint, underCursorPoint)) {
-				return buildingsPoints.ContainsKey(checkedPoint)
-					? GridPointStatus.UNAVAILABLE_FOR_BUILD
-					: GridPointStatus.AVAILABLE_FOR_BUILD;
-			}
-
-			var isBusyToo = underConstructionBuilding
-			                .settings
-			                .offsetPoints
-			                .Select(offset => underCursorPoint + offset)
-			                .Contains(checkedPoint);
-
-			if (isBusyToo) {
+			if (Equals(checkedPoint, underCursorPoint) || underConstructionBuilding.settings.offsetPoints.Contains(checkedPoint - underCursorPoint)) {
 				return buildingsPoints.ContainsKey(checkedPoint)
 					? GridPointStatus.UNAVAILABLE_FOR_BUILD
 					: GridPointStatus.AVAILABLE_FOR_BUILD;

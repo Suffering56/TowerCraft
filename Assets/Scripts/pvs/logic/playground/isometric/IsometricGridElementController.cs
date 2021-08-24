@@ -17,10 +17,6 @@ namespace pvs.logic.playground.isometric {
 		private GridPointStatus status = GridPointStatus.NONE;
 		private bool isEditor => initialState == null;
 
-		private void Awake() {
-			spriteRenderer = GetComponent<SpriteRenderer>();
-		}
-
 		private void Update() {
 			var newStatus = playgroundBuildingsState.GetGridPointStatus(position);
 
@@ -39,6 +35,7 @@ namespace pvs.logic.playground.isometric {
 				name += ".Debug";
 			}
 
+			spriteRenderer = GetComponent<SpriteRenderer>();
 			spriteRenderer.color = initialState.GetIsometricGridColor(GridPointStatus.NONE);
 			spriteRenderer.sortingOrder = position.y;
 		}
