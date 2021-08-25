@@ -7,12 +7,14 @@ namespace pvs.logic.playground.isometric {
 		public void IterateAllElements(GridElementConsumer gridElementConsumer);
 
 		/**
-		 * @param worldPivotPosition - это левый верхний угол прямоугольника, в который можно обернуть изометрический ромб
+		 * @param worldPivotPosition - это центр ромбика
 		 */
-		public delegate void GridElementConsumer(Vector2 worldPivotPosition, IsometricGridPosition gridPosition, Vector3 elementScale);
+		public delegate void GridElementConsumer(Vector2 worldPosition, IsometricPoint point, Vector3 elementScale);
 
-		public IsometricGridPosition ConvertToGridPosition(Vector2 mouseWorldPosition);
+		public IsometricPoint ConvertToGridPosition(Vector2 mouseWorldPosition);
 
 		public Vector2? GetNearestGridElementCenter(Vector2 mouseWorldPosition);
+
+		public bool IsOutOfGrid(IsometricPoint point);
 	}
 }

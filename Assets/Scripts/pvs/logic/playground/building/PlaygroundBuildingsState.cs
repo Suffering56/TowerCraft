@@ -15,6 +15,7 @@ namespace pvs.logic.playground.building {
 
 		[Inject] private readonly DiContainer container;
 		[Inject] private readonly IBuildingsSettings buildingsSettings;
+		[Inject] private readonly IIsometricInfo isometricInfo;
 
 		// при разработке величина одной ячейки изометрической сетки была (0.5 х 0.25). соответственно если размер ячеек будет изменен, то нужно будет изменить и масштаб строений
 		// если строение имеет scale = 1x1, оно будет занимать одну изометрическую ячейку
@@ -22,11 +23,11 @@ namespace pvs.logic.playground.building {
 		private readonly Vector3 calculatedScale = Vector3.one;
 
 		// если строение занимает более 1й клетки, то здесь будет несколько точек ведущих к одному и тому же стейту
-		private readonly IDictionary<IsometricGridPosition, IBuildingState> buildingsPoints = new Dictionary<IsometricGridPosition, IBuildingState>();
+		private readonly IDictionary<IsometricPoint, IBuildingState> buildingsPoints = new Dictionary<IsometricPoint, IBuildingState>();
 		private int buildingIdGenerator = 1;
 
 		private IBuildingState underConstructionBuilding;
-		private IsometricGridPosition underCursorPoint;
+		private IsometricPoint underCursorPoint;
 		public bool buildingModeEnabled => underConstructionBuilding != null;
 
 		public PlaygroundBuildingsState([Inject] IPlaygroundInitialState playgroundInitialState) {
@@ -52,7 +53,7 @@ namespace pvs.logic.playground.building {
 			return gameObject;
 		}
 
-		public bool FinishBuildProcess(IsometricGridPosition finalBuildingPosition) {
+		public bool FinishBuildProcess(IsometricPoint finalBuildingPosition) {
 			var allBuildingPositions = Enumerable
 			                           .Repeat(finalBuildingPosition, 1)
 			                           .Concat(underConstructionBuilding
@@ -61,7 +62,13 @@ namespace pvs.logic.playground.building {
 			                                   .Select(offset => finalBuildingPosition + offset)
 			                           ).ToList();
 
+			if (allBuildingPositions.Any(point => isometricInfo.IsOutOfGrid(point))) {
+				// нельзя строить здание за границами сетки (даже если оно вылезает за них частично)
+				return false;
+			}
+
 			if (buildingsPoints.Keys.Intersect(allBuildingPositions).Any()) {
+				// нельзя строить здание на занятой точке
 				return false;
 			}
 
@@ -79,11 +86,11 @@ namespace pvs.logic.playground.building {
 			underConstructionBuilding = null;
 		}
 
-		public void UpdateUnderCursorPoint(IsometricGridPosition newUnderCursorGridPoint) {
+		public void UpdateUnderCursorPoint(IsometricPoint newUnderCursorGridPoint) {
 			underCursorPoint = newUnderCursorGridPoint;
 		}
 
-		public GridPointStatus GetGridPointStatus(IsometricGridPosition checkedPoint) {
+		public GridPointStatus GetGridPointStatus(IsometricPoint checkedPoint) {
 			if (underCursorPoint == null || underConstructionBuilding == null) {
 				return GridPointStatus.NONE;
 			}

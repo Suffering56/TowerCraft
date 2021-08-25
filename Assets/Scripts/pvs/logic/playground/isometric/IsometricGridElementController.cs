@@ -12,7 +12,7 @@ namespace pvs.logic.playground.isometric {
 
 		private SpriteRenderer spriteRenderer;
 
-		public IsometricGridPosition position { get; private set; }
+		public IsometricPoint position { get; private set; }
 
 		private GridPointStatus status = GridPointStatus.NONE;
 		private bool isEditor => initialState == null;
@@ -27,7 +27,7 @@ namespace pvs.logic.playground.isometric {
 		}
 
 		// с радостью сделал бы это в Start(), но у нас еще дебаг режим есть
-		public void Init(IsometricGridPosition position, IPlaygroundInitialState initialState) {
+		public void Init(IsometricPoint position, IPlaygroundInitialState initialState) {
 			this.position = position;
 
 			name += $"[{position.x},{position.y}]";

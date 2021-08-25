@@ -6,10 +6,10 @@ namespace pvs.logic.playground.building {
 
 	public interface IBuildingState {
 		public int id { get; }                             // идентификатор здания
-		public IsometricGridPosition gridPosition { get; } // где построено здание (в какой клетке)
+		public IsometricPoint Point { get; } // где построено здание (в какой клетке)
 		public IBuildingSettings settings { get; }         // настройки
 		public GameObject instanceGameObject { get; }      // ссылка на префаб строения
 
-		public void FinishBuild(int id, IsometricGridPosition gridPosition);
+		public void FinishBuild(int id, IsometricPoint point);
 	}
 }

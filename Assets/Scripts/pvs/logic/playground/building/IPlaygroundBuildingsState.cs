@@ -5,17 +5,18 @@ using UnityEngine;
 namespace pvs.logic.playground.building {
 
 	public interface IPlaygroundBuildingsState {
+		
 		public bool buildingModeEnabled { get; }
 
 		public GameObject StartBuildingProcess(BuildingType type);
 
-		public bool FinishBuildProcess(IsometricGridPosition finalBuildingPosition);
+		public bool FinishBuildProcess(IsometricPoint finalBuildingPosition);
 
 		public void CancelBuildProcess();
 
-		public void UpdateUnderCursorPoint([CanBeNull] IsometricGridPosition newUnderCursorGridPoint);
+		public void UpdateUnderCursorPoint([CanBeNull] IsometricPoint newUnderCursorGridPoint);
 
-		GridPointStatus GetGridPointStatus(IsometricGridPosition checkedPoint);
+		GridPointStatus GetGridPointStatus(IsometricPoint checkedPoint);
 	}
 
 	public enum GridPointStatus {

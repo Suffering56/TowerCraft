@@ -8,6 +8,6 @@ namespace pvs.logic.playground.building.settings {
 
 		BuildingType buildingType { get; }
 		public Object prefab { get; }
-		ISet<IsometricGridPosition> offsetPoints { get; }
+		ISet<IsometricPoint> offsetPoints { get; }
 	}
 }

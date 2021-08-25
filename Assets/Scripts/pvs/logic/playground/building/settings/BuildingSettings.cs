@@ -10,12 +10,12 @@ namespace pvs.logic.playground.building.settings {
 
 		public BuildingType buildingType { get; }
 		public Object prefab { get; }
-		public ISet<IsometricGridPosition> offsetPoints { get; }
+		public ISet<IsometricPoint> offsetPoints { get; }
 
-		public BuildingSettings(BuildingType buildingType, string buildingPrefabName, params IsometricGridPosition[] offsetPoints) {
+		public BuildingSettings(BuildingType buildingType, string buildingPrefabName, params IsometricPoint[] offsetPoints) {
 			this.buildingType = buildingType;
 			prefab = Resources.Load(PREFIX + buildingPrefabName);
-			this.offsetPoints = new HashSet<IsometricGridPosition>(offsetPoints);
+			this.offsetPoints = new HashSet<IsometricPoint>(offsetPoints);
 		}
 	}
 }

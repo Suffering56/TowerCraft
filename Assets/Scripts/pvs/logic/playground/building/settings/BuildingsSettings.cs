@@ -8,10 +8,10 @@ namespace pvs.logic.playground.building.settings {
 
 		private readonly Dictionary<BuildingType, BuildingSettings> buildings;
 
-		private static readonly IsometricGridPosition[] LARGE_BUILDING_OFFSETS = {
-			new IsometricGridPosition(-1, -1),
-			new IsometricGridPosition(1, -1),
-			new IsometricGridPosition(0, -2),
+		private static readonly IsometricPoint[] LARGE_BUILDING_OFFSETS = {
+			new IsometricPoint(-1, -1),
+			new IsometricPoint(1, -1),
+			new IsometricPoint(0, -2),
 		};
 
 		public BuildingsSettings() {

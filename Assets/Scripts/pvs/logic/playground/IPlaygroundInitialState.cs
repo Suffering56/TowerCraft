@@ -1,6 +1,6 @@
 ﻿using pvs.logic.playground.building;
-using pvs.logic.playground.isometric;
 using UnityEngine;
+
 namespace pvs.logic.playground {
 
 	public interface IPlaygroundInitialState {
@@ -11,6 +11,5 @@ namespace pvs.logic.playground {
 		public float isometricGridWidth { get; }
 		public Color GetIsometricGridColor(GridPointStatus status);
 		public bool showDebugGrid { get; }
-		public IIsometricInfo isometricInfo { get; }
 	}
 }

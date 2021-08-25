@@ -1,5 +1,4 @@
 ﻿using pvs.logic.playground.building;
-using pvs.logic.playground.isometric;
 using pvs.settings.debug;
 using pvs.utils.code;
 using UnityEngine;
@@ -14,8 +13,6 @@ namespace pvs.logic.playground {
 		public bool buildingModeEnabled { get; }
 		public bool showDebugGrid { get; }
 
-		public IIsometricInfo isometricInfo { get; }
-
 		private readonly DebugSettings debugSettings;
 
 		public PlaygroundInitialState(DebugSettings debugSettings) {
@@ -27,8 +24,6 @@ namespace pvs.logic.playground {
 
 			buildingModeEnabled = debugSettings.buildingModeEnabled;
 			showDebugGrid = debugSettings.showDebugGrid;
-
-			isometricInfo = new IsometricInfo(this);
 		}
 
 		public Color GetIsometricGridColor(GridPointStatus status) {

@@ -5,6 +5,7 @@ using pvs.logic.playground;
 using pvs.logic.playground.building;
 using pvs.logic.playground.building.settings;
 using pvs.logic.playground.camera;
+using pvs.logic.playground.isometric;
 using pvs.settings.debug;
 using pvs.utils.code;
 using UnityEngine;
@@ -29,6 +30,7 @@ namespace pvs {
 				.AsSingle()
 				.NonLazy();
 		}
+		
 		private void BindPlaygroundCameraDependencies() {
 			BindInterfacesAndSelfTo<PlaygroundCameraState>()
 				.AsSingle();
@@ -42,8 +44,10 @@ namespace pvs {
 				.AsSingle();
 
 			BindInterfacesAndSelfTo<BuildingsSettings>()
-				.AsSingle()
-				.NonLazy();
+				.AsSingle();
+			
+			BindInterfacesAndSelfTo<IsometricInfo>()
+				.AsSingle();
 		}
 
 		private FromBinderNonGeneric BindInterfacesAndSelfTo<T>() {

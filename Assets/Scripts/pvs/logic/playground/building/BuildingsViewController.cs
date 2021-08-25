@@ -7,19 +7,16 @@ namespace pvs.logic.playground.building {
 
 	public class BuildingsViewController : MonoBehaviour {
 
-		[Inject] private readonly IPlaygroundInitialState playgroundInitialState;
 		[Inject] private readonly IPlaygroundBuildingsState playgroundBuildingsState;
+		[Inject] private readonly IIsometricInfo isometricInfo;
 
 		private Camera playgroundCamera;
 		private GameObject underConstructionBuilding;
-		private float buildingYOffset;
 
 		private static int counter = 0;
 
 		private void Start() {
 			playgroundCamera = Camera.main;
-			// если хотим чтобы здание было по центру, нужно сместить его пивот на yOffset вниз
-			buildingYOffset = -playgroundInitialState.isometricGridHeight / 2;
 		}
 
 		private void Update() {
@@ -34,14 +31,14 @@ namespace pvs.logic.playground.building {
 
 			if (underConstructionBuilding) {
 				var nearest = FindNearestCenterGridPoint();
-				underConstructionBuilding.transform.position = new Vector3(nearest.x, nearest.y + buildingYOffset, transform.position.z);
+				underConstructionBuilding.transform.position = new Vector3(nearest.x, nearest.y, transform.position.z);
 
 				if (nearest == Constants.NULL_VECTOR_2) {
 					playgroundBuildingsState.UpdateUnderCursorPoint(null);
 					return;
 				}
 
-				var nearestGrid = playgroundInitialState.isometricInfo.ConvertToGridPosition(nearest);
+				var nearestGrid = isometricInfo.ConvertToGridPosition(nearest);
 
 				if (Input.GetKeyUp(Constants.FINISH_BUILD_KEY)) {
 					FinishBuildingProcess(nearestGrid);
@@ -53,7 +50,7 @@ namespace pvs.logic.playground.building {
 
 		private Vector2 FindNearestCenterGridPoint() {
 			var mousePosition = GetMouseWorldPosition();
-			return playgroundInitialState.isometricInfo.GetNearestGridElementCenter(mousePosition) ?? Constants.NULL_VECTOR_2;
+			return isometricInfo.GetNearestGridElementCenter(mousePosition) ?? Constants.NULL_VECTOR_2;
 		}
 
 		private Vector3 GetMouseWorldPosition() {
@@ -65,12 +62,14 @@ namespace pvs.logic.playground.building {
 
 			var buildingGameObject = playgroundBuildingsState.StartBuildingProcess(counter++ % 2 == 0 ? BuildingType.BARRACKS : BuildingType.LARGE_BARRACKS);
 			buildingGameObject.transform.parent = transform;
-			buildingGameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y + buildingYOffset, transform.position.z);
+			buildingGameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
 
 			underConstructionBuilding = buildingGameObject;
 		}
 
-		private void FinishBuildingProcess(IsometricGridPosition finalBuildingPosition) {
+		private void LoadBuilding(BuildingType type, IsometricPoint position) { }
+
+		private void FinishBuildingProcess(IsometricPoint finalBuildingPosition) {
 			bool success = playgroundBuildingsState.FinishBuildProcess(finalBuildingPosition);
 			if (success) {
 				underConstructionBuilding = null;

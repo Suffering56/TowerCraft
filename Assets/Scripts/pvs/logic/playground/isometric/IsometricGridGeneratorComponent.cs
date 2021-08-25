@@ -13,15 +13,17 @@ namespace pvs.logic.playground.isometric {
 		[Inject] private DiContainer container;
 		[Inject] private IPlaygroundInitialState initialState;
 		[Inject] private IPlaygroundBuildingsState playgroundBuildingsState;
+		[Inject] private IIsometricInfo isometricInfo;
+
 		private bool buildingModeEnabled;
 
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState ??= debugSettings;
+			isometricInfo ??= new IsometricInfo(debugSettings);
 			
+			VUnityUtils.CleanChildren(transform);
 			if (debugSettings.buildingModeEnabled) {
 				DrawBuildingModeGrid();
-			} else {
-				VUnityUtils.CleanChildren(transform);
 			}
 		}
 
@@ -41,10 +43,10 @@ namespace pvs.logic.playground.isometric {
 		}
 
 		private void DrawBuildingModeGrid() {
-			initialState.isometricInfo.IterateAllElements(InstantiateGridBlock);
+			isometricInfo.IterateAllElements(InstantiateGridBlock);
 		}
 
-		private void InstantiateGridBlock(Vector2 worldPosition, IsometricGridPosition gridPosition, Vector3 scale) {
+		private void InstantiateGridBlock(Vector2 worldPosition, IsometricPoint point, Vector3 scale) {
 			var blockInstance = container?.InstantiatePrefab(gridElementPrefab, transform.position, Quaternion.identity, transform)
 			                    ?? Instantiate(gridElementPrefab, gameObject.transform, true);
 
@@ -53,26 +55,26 @@ namespace pvs.logic.playground.isometric {
 			blockInstance.transform.localScale = scale;
 
 			var controller = blockInstance.GetComponent<IsometricGridElementController>();
-			controller.Init(gridPosition, initialState);
+			controller.Init(point, initialState);
 		}
 
 		private void OnDrawGizmos() {
 			if (initialState == null || initialState.showDebugGrid == false) return;
 
 			float z = transform.position.z;
-			float step = initialState.isometricGridHeight / 2; // половина высоты блока
-			float step2 = step * 2;                            // половина ширины блока/высота блока
-			float step4 = step * 4;                            // ширина блока
+			float stepX = initialState.isometricGridHeight;
+			float stepY = initialState.isometricGridHeight / 2;
 
-			initialState.isometricInfo.IterateAllElements((worldPos, gridPos, elementScale) => {
-				// слева наверх
-				Gizmos.DrawLine(new Vector3(worldPos.x, worldPos.y - step, z), new Vector3(worldPos.x + step2, worldPos.y, z));
-				// слева вниз
-				Gizmos.DrawLine(new Vector3(worldPos.x, worldPos.y - step, z), new Vector3(worldPos.x + step2, worldPos.y - step2, z));
-				// справа наверх
-				Gizmos.DrawLine(new Vector3(worldPos.x + step4, worldPos.y - step, z), new Vector3(worldPos.x + step2, worldPos.y, z));
-				// справа вниз
-				Gizmos.DrawLine(new Vector3(worldPos.x + step4, worldPos.y - step, z), new Vector3(worldPos.x + step2, worldPos.y - step2, z));
+			isometricInfo.IterateAllElements((worldPos, gridPos, elementScale) => {
+				var top = new Vector3(worldPos.x, worldPos.y + stepY, z);
+				var right = new Vector3(worldPos.x + stepX, worldPos.y, z);
+				var bottom = new Vector3(worldPos.x, worldPos.y - stepY, z);
+				var left = new Vector3(worldPos.x - stepX, worldPos.y, z);
+
+				Gizmos.DrawLine(left, top);		// слева наверх
+				Gizmos.DrawLine(top, right);	// сверху направо
+				Gizmos.DrawLine(right, bottom);	// справа вниз
+				Gizmos.DrawLine(bottom, left);	// снизу налево
 			});
 		}
 	}

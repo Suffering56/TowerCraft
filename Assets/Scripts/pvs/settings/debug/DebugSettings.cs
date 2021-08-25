@@ -63,8 +63,6 @@ namespace pvs.settings.debug {
 
 		public KeyCode cameraStopKey => _cameraStopKey;
 
-		public IIsometricInfo isometricInfo => new IsometricInfo(this);
-
 		public Color GetIsometricGridColor(GridPointStatus status) {
 			return status switch {
 				GridPointStatus.NONE => _isometricGridDefaultColor,
