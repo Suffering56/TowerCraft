@@ -74,6 +74,7 @@
      <Compile Include="Assets\Scripts\pvs\logic\playground\camera\IPlaygroundCameraState.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\terrain\PlaygroundTerrainGeneratorComponent.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\isometric\IsometricGridElementController.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\building\json\BuildingNode.cs" />
      <Reference Include="UnityEngine">
      <HintPath>F:/02_Unity/Unity/2021.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>

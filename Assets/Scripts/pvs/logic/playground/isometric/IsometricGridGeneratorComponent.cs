@@ -18,8 +18,8 @@ namespace pvs.logic.playground.isometric {
 		private bool buildingModeEnabled;
 
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
-			initialState ??= debugSettings;
-			isometricInfo ??= new IsometricInfo(debugSettings);
+			initialState = debugSettings;
+			isometricInfo = new IsometricInfo(debugSettings);
 			
 			VUnityUtils.CleanChildren(transform);
 			if (debugSettings.buildingModeEnabled) {

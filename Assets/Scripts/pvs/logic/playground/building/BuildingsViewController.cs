@@ -9,6 +9,7 @@ namespace pvs.logic.playground.building {
 
 		[Inject] private readonly IPlaygroundBuildingsState playgroundBuildingsState;
 		[Inject] private readonly IIsometricInfo isometricInfo;
+		[SerializeField] private AudioSource errorAudioSource;
 
 		private Camera playgroundCamera;
 		private GameObject underConstructionBuilding;
@@ -73,6 +74,8 @@ namespace pvs.logic.playground.building {
 			bool success = playgroundBuildingsState.FinishBuildProcess(finalBuildingPosition);
 			if (success) {
 				underConstructionBuilding = null;
+			} else {
+				errorAudioSource.Play();
 			}
 		}
 

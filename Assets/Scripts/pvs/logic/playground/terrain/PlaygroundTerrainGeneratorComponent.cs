@@ -8,7 +8,7 @@ namespace pvs.logic.playground.terrain {
 		[Inject] private IPlaygroundInitialState initialState;
 
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
-			initialState ??= debugSettings;
+			initialState = debugSettings;
 			DrawTerrain(true);
 		}
 

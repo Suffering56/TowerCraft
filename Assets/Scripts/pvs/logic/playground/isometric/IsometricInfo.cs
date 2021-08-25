@@ -78,6 +78,10 @@ namespace pvs.logic.playground.isometric {
 				(int)(relativeOffsetX / worldStep.x),
 				(int)(relativeOffsetY / worldStep.y)
 			);
+		} 
+		
+		public Vector2 ConvertToWorldPosition(IsometricPoint point) {
+			return topLeftPoint + point * worldStep;
 		}
 
 		public Vector2? GetNearestGridElementCenter(Vector2 mouseWorldPosition) {
@@ -111,19 +115,10 @@ namespace pvs.logic.playground.isometric {
 		}
 
 		private bool IsOutOfGrid(Vector2 nearest) {
-			if (nearest.x < topLeftPoint.x) {
-				return true;
-			}
-			if (nearest.x > bottomRightPoint.x) {
-				return true;
-			}
-			if (nearest.y > topLeftPoint.y) {
-				return true;
-			}
-			if (nearest.y < bottomRightPoint.y) {
-				return true;
-			}
-			return false;
+			return nearest.x < topLeftPoint.x ||
+			       nearest.y > topLeftPoint.y ||
+			       nearest.x > bottomRightPoint.x ||
+			       nearest.y < bottomRightPoint.y;
 		}
 
 		/*
@@ -135,6 +130,7 @@ namespace pvs.logic.playground.isometric {
 		private static Vector2 FlattenDistance(Vector2 distance) {
 			return new Vector2(distance.x / 2, distance.y);
 		}
+
 
 		private const int INFINITY_LOOP_PROTECTION = 10000;
 
@@ -168,6 +164,7 @@ namespace pvs.logic.playground.isometric {
 					gridPosX += 2;
 
 					if (counter++ > INFINITY_LOOP_PROTECTION) {
+						// защищает нас от зависания юнити, если изменение логики приводит к бесконечности этого цикла
 						Debug.LogError($"{GetType().Name}.IterateAllElements infinity loop protection");
 						return;
 					}

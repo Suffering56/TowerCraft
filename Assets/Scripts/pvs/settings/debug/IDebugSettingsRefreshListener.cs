@@ -8,7 +8,8 @@ namespace pvs.settings.debug
 	public interface IDebugSettingsRefreshListener
 	{
 		/**
-		 * Вызывается о событию "MonoBehaviour.OnDrawGizmos()", но только при рефреше настроек (переключении флагша refresh в false в редакторе Unity)
+		 * Вызывается при изменении настроек в режиме редкатора по "MonoBehaviour.OnDrawGizmos()"
+		 * НЕ МОЖЕТ БЫТЬ ВЫЗВАНО В РАНТАЙМЕ
 		 */
 		void OnDebugSettingsRefreshed([NotNull] DebugSettings debugSettings);
 	}
