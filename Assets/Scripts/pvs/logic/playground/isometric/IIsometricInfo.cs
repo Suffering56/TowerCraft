@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
 namespace pvs.logic.playground.isometric {
-	
+
 	public interface IIsometricInfo {
 		
 		public void IterateAllElements(GridElementConsumer gridElementConsumer);
-
+		
 		/**
 		 * @param worldPivotPosition - это центр ромбика
 		 */
@@ -13,8 +13,12 @@ namespace pvs.logic.playground.isometric {
 
 		public IsometricPoint ConvertToGridPosition(Vector2 mouseWorldPosition);
 
+		public Vector2 ConvertToWorldPosition(IsometricPoint point);
+
 		public Vector2? GetNearestGridElementCenter(Vector2 mouseWorldPosition);
 
 		public bool IsOutOfGrid(IsometricPoint point);
+
+		Vector3 elementScale { get; }
 	}
 }

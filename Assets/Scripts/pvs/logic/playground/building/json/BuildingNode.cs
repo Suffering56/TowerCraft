@@ -1,10 +1,11 @@
-﻿using pvs.logic.playground.building.settings;
-using pvs.logic.playground.isometric;
+﻿using System;
+using pvs.logic.playground.building.settings;
 namespace pvs.logic.playground.building.json {
 
+	[Serializable]
 	public class BuildingNode {
 
-		private BuildingType buildingType;
-		private IsometricPoint position;
+		public BuildingType buildingType;
+		public IsometricPointNode position;
 	}
 }

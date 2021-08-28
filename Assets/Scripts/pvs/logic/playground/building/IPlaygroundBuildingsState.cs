@@ -2,10 +2,17 @@
 using pvs.logic.playground.building.settings;
 using pvs.logic.playground.isometric;
 using UnityEngine;
+
 namespace pvs.logic.playground.building {
 
 	public interface IPlaygroundBuildingsState {
-		
+
+		public void Save();
+
+		public void Load(Transform parent);
+
+		public void Reset();
+
 		public bool buildingModeEnabled { get; }
 
 		public GameObject StartBuildingProcess(BuildingType type);

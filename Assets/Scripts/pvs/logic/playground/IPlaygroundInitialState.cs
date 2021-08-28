@@ -7,9 +7,10 @@ namespace pvs.logic.playground {
 
 		public Vector2 terrainSize { get; }
 		public GameObject terrainElementPrefab { get; }
-		public float isometricGridHeight { get; }
-		public float isometricGridWidth { get; }
+		public Vector2 isometricElementSize { get; }
+
 		public Color GetIsometricGridColor(GridPointStatus status);
+
 		public bool showDebugGrid { get; }
 	}
 }

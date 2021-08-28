@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using pvs.logic.playground.building.json;
 using pvs.logic.playground.building.settings;
 using pvs.logic.playground.isometric;
+using pvs.utils;
 using pvs.utils.code;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -17,23 +20,47 @@ namespace pvs.logic.playground.building {
 		[Inject] private readonly IBuildingsSettings buildingsSettings;
 		[Inject] private readonly IIsometricInfo isometricInfo;
 
-		// при разработке величина одной ячейки изометрической сетки была (0.5 х 0.25). соответственно если размер ячеек будет изменен, то нужно будет изменить и масштаб строений
-		// если строение имеет scale = 1x1, оно будет занимать одну изометрическую ячейку
-		private static readonly Vector2 ORIGIN_ISOMETRIC_GRID_SIZE_IN_WORLD_UNITS = new Vector2(0.5f, 0.25f);
-		private readonly Vector3 calculatedScale = Vector3.one;
+		private int buildingIdGenerator = 1;
+		private const string JSON_FILE_NAME = "playgroundState.json";
+		public bool buildingModeEnabled => underConstructionBuilding != null;
 
 		// если строение занимает более 1й клетки, то здесь будет несколько точек ведущих к одному и тому же стейту
 		private readonly IDictionary<IsometricPoint, IBuildingState> buildingsPoints = new Dictionary<IsometricPoint, IBuildingState>();
-		private int buildingIdGenerator = 1;
-
 		private IBuildingState underConstructionBuilding;
 		private IsometricPoint underCursorPoint;
-		public bool buildingModeEnabled => underConstructionBuilding != null;
+		
+		public void Reset() {
+			buildingsPoints.Clear();
+		}
+		
+		public void Save() {
+			var playgroundBuildingNode = new PlaygroundBuildingsStateNode {
+				buildings = buildingsPoints
+				            .Values
+				            .DistinctBy(building => building.id)
+				            .Select(building => building.ToJsonNode())
+				            .ToArray()
+			};
 
-		public PlaygroundBuildingsState([Inject] IPlaygroundInitialState playgroundInitialState) {
-			if (Math.Abs(playgroundInitialState.isometricGridHeight - ORIGIN_ISOMETRIC_GRID_SIZE_IN_WORLD_UNITS.y) > 0.001f) {
-				float coefficient = playgroundInitialState.isometricGridHeight / ORIGIN_ISOMETRIC_GRID_SIZE_IN_WORLD_UNITS.y;
-				calculatedScale = new Vector3(coefficient, coefficient, 1);
+			JsonUtils.WriteJson(JSON_FILE_NAME, playgroundBuildingNode);
+		}
+
+		public void Load(Transform parent) {
+			var loadedState = JsonUtils.ReadJson<PlaygroundBuildingsStateNode>(JSON_FILE_NAME);
+			if (loadedState == default(PlaygroundBuildingsStateNode)) {
+				return;
+			}
+
+			foreach (var buildingNode in loadedState.buildings) {
+				var gameObject = StartBuildingProcess(buildingNode.buildingType);
+				var gridPosition = buildingNode.position.ToPoint();
+				
+				gameObject.transform.parent = parent;
+				gameObject.transform.position = isometricInfo
+				                                .ConvertToWorldPosition(gridPosition)
+				                                .ToVector3(parent.position.z);
+				
+				FinishBuildProcess(gridPosition);
 			}
 		}
 
@@ -47,7 +74,8 @@ namespace pvs.logic.playground.building {
 			var gameObject = container.InstantiatePrefab(settings.prefab);
 
 			gameObject.name = settings.prefab.name;
-			gameObject.transform.localScale = calculatedScale;
+			gameObject.transform.localScale = isometricInfo.elementScale;
+			gameObject.GetComponent<SpriteRenderer>().sortingOrder = short.MaxValue;
 
 			underConstructionBuilding = new BuildingState(settings, gameObject);
 			return gameObject;

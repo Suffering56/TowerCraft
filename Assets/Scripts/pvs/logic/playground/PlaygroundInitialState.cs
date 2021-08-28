@@ -8,8 +8,7 @@ namespace pvs.logic.playground {
 	public class PlaygroundInitialState : IPlaygroundInitialState {
 		public Vector2 terrainSize { get; }
 		public GameObject terrainElementPrefab { get; }
-		public float isometricGridHeight { get; }
-		public float isometricGridWidth => isometricGridHeight * 2;
+		public Vector2 isometricElementSize { get; }
 		public bool buildingModeEnabled { get; }
 		public bool showDebugGrid { get; }
 
@@ -17,10 +16,10 @@ namespace pvs.logic.playground {
 
 		public PlaygroundInitialState(DebugSettings debugSettings) {
 			this.debugSettings = debugSettings;
-			
+
 			terrainSize = debugSettings.terrainSize;
 			terrainElementPrefab = debugSettings.terrainElementPrefab;
-			isometricGridHeight = debugSettings.isometricGridHeight;
+			isometricElementSize = debugSettings.isometricElementSize;
 
 			buildingModeEnabled = debugSettings.buildingModeEnabled;
 			showDebugGrid = debugSettings.showDebugGrid;

@@ -3,6 +3,7 @@
 	public enum BuildingType
 	{
 		BARRACKS,
-		LARGE_BARRACKS
+		LARGE_BARRACKS,
+		BASHENKA
 	}
 }

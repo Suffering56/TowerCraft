@@ -11,9 +11,6 @@ namespace pvs.logic.playground.isometric {
 		// минимальный шаг, который нам потребуется для работы с сеткой
 		private readonly Vector2 worldStep;
 
-		// localScale gameObject-а элемента сетки
-		private readonly Vector3 elementScale;
-
 		// координаты (центра) первого элемента [0,0] в мировом пространстве
 		private readonly Vector2 topLeftPoint;
 
@@ -26,12 +23,19 @@ namespace pvs.logic.playground.isometric {
 		// последний элемент [pivot = bottomRightPoint]
 		private readonly IsometricPoint lastPoint;
 
+		// localScale gameObject-а элемента сетки (префаба изометрического ромбика)
+		public Vector3 elementScale { get; }
+
+		// при разработке величина одной ячейки изометрической сетки была (0.5 х 0.25). соответственно если размер ячеек будет изменен, то нужно будет изменить и масштаб строений
+		private static readonly Vector2 ORIGIN_ELEMENT_SIZE = new Vector2(0.5f, 0.25f);
+
 		public IsometricInfo(IPlaygroundInitialState parent) {
 			var terrainSize = parent.terrainSize;
 
-			elementSize = new Vector2(parent.isometricGridWidth, parent.isometricGridHeight);
+			elementSize = parent.isometricElementSize;
 			worldStep = elementSize / 2;
-			elementScale = CalculateElementScale(elementSize.y);
+
+			elementScale = (elementSize / ORIGIN_ELEMENT_SIZE).ToVector3(1);
 
 			bottomRightPoint = new Vector2(
 				terrainSize.x / 2 - worldStep.x,
@@ -78,10 +82,13 @@ namespace pvs.logic.playground.isometric {
 				(int)(relativeOffsetX / worldStep.x),
 				(int)(relativeOffsetY / worldStep.y)
 			);
-		} 
-		
+		}
+
 		public Vector2 ConvertToWorldPosition(IsometricPoint point) {
-			return topLeftPoint + point * worldStep;
+			return new Vector2(
+				topLeftPoint.x + point.x * worldStep.x,
+				topLeftPoint.y - point.y * worldStep.y
+			);
 		}
 
 		public Vector2? GetNearestGridElementCenter(Vector2 mouseWorldPosition) {
@@ -131,7 +138,6 @@ namespace pvs.logic.playground.isometric {
 			return new Vector2(distance.x / 2, distance.y);
 		}
 
-
 		private const int INFINITY_LOOP_PROTECTION = 10000;
 
 		public void IterateAllElements(IIsometricInfo.GridElementConsumer gridElementConsumer) {
@@ -173,15 +179,6 @@ namespace pvs.logic.playground.isometric {
 				worldY -= worldStep.y;
 				gridPosY++;
 			}
-		}
-
-		/**
-		 * Раситываем scale isometricGridBlockPrefab, исходя из следующей информации:
-		 * - размер спрайта префаба = 100х50px, и сам префаб не нарушает этот масштаб
-		 * - размер спрайта terrain-а = 100х100px, и его родительский префаб не нарушает этот масштаб
-		 */
-		private static Vector3 CalculateElementScale(float isometricGridYScale) {
-			return new Vector3(isometricGridYScale * 2, isometricGridYScale * 2, 1);
 		}
 	}
 }

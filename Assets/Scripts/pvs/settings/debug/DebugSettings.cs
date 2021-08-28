@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using pvs.attribute;
 using pvs.logic.playground;
 using pvs.logic.playground.building;
-using pvs.logic.playground.isometric;
 using pvs.utils.code;
 using UnityEngine;
 
@@ -25,8 +24,7 @@ namespace pvs.settings.debug {
 		[SpaceAttribute(20)]
 		[SerializeField]
 		private float _isometricGridHeight = 0.25f;
-		public float isometricGridHeight => _isometricGridHeight;
-		public float isometricGridWidth => isometricGridHeight * 2;
+		public Vector2 isometricElementSize => new Vector2(_isometricGridHeight * 2, _isometricGridHeight);
 
 		[SerializeField]
 		private bool _buildingModeEnabled = true;

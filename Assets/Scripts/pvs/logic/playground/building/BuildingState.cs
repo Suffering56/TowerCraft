@@ -1,4 +1,5 @@
 ﻿using System;
+using pvs.logic.playground.building.json;
 using pvs.logic.playground.building.settings;
 using pvs.logic.playground.isometric;
 using UnityEngine;
@@ -9,9 +10,9 @@ namespace pvs.logic.playground.building {
 
 		private const int UNFINISHED = -1;
 
-		public int id { get; private set; } = UNFINISHED;               // идентификатор здания
+		public int id { get; private set; } = UNFINISHED; // идентификатор здания
 		public IsometricPoint Point { get; private set; } // где построено здание (в какой клетке)
-		public IBuildingSettings settings { get; }                      // настройки
+		public IBuildingSettings settings { get; }        // настройки
 		public GameObject instanceGameObject { get; }
 
 		public BuildingState(IBuildingSettings settings, GameObject objectLink) {
@@ -27,6 +28,14 @@ namespace pvs.logic.playground.building {
 			this.id = id;
 			this.Point = point;
 			instanceGameObject.name += $"[{id}]";
+			instanceGameObject.GetComponent<SpriteRenderer>().sortingOrder = point.y;
+		}
+
+		public BuildingNode ToJsonNode() {
+			return new BuildingNode {
+				buildingType = settings.buildingType,
+				position = Point.ToJsonNode()
+			};
 		}
 	}
 }

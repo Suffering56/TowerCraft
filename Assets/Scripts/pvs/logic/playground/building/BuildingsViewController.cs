@@ -1,6 +1,8 @@
-﻿using pvs.logic.playground.building.settings;
+﻿using System;
+using pvs.logic.playground.building.settings;
 using pvs.logic.playground.isometric;
 using pvs.settings.debug;
+using pvs.utils;
 using UnityEngine;
 using Zenject;
 namespace pvs.logic.playground.building {
@@ -18,9 +20,26 @@ namespace pvs.logic.playground.building {
 
 		private void Start() {
 			playgroundCamera = Camera.main;
+			playgroundBuildingsState.Load(transform);
 		}
 
 		private void Update() {
+			if (Input.GetKeyUp(KeyCode.R)) {
+				VUnityUtils.CleanChildren(transform);
+				playgroundBuildingsState.Reset();
+				return;
+			}
+			
+			if (Input.GetKeyUp(KeyCode.S)) {
+				playgroundBuildingsState.Save();
+				return;
+			}
+			
+			if (Input.GetKeyUp(KeyCode.C)) {
+				counter++;
+				return;
+			}
+
 			if (Input.GetKeyUp(Constants.BUILDING_MODE_KEY)) {
 				if (!underConstructionBuilding) {
 					StartBuildingProcess();
@@ -61,11 +80,20 @@ namespace pvs.logic.playground.building {
 		private void StartBuildingProcess() {
 			var mousePosition = GetMouseWorldPosition();
 
-			var buildingGameObject = playgroundBuildingsState.StartBuildingProcess(counter++ % 2 == 0 ? BuildingType.BARRACKS : BuildingType.LARGE_BARRACKS);
+			var buildingGameObject = playgroundBuildingsState.StartBuildingProcess(GetBuildingType());
 			buildingGameObject.transform.parent = transform;
 			buildingGameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
 
 			underConstructionBuilding = buildingGameObject;
+		}
+
+		private static BuildingType GetBuildingType() {
+			return (counter % 3) switch {
+				0 => BuildingType.BARRACKS,
+				1 => BuildingType.LARGE_BARRACKS,
+				2 => BuildingType.BASHENKA,
+				_ => throw new ArgumentOutOfRangeException()
+			};
 		}
 
 		private void LoadBuilding(BuildingType type, IsometricPoint position) { }

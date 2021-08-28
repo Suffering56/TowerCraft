@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using JetBrains.Annotations;
+using pvs.logic.playground.building.json;
+using UnityEngine;
 namespace pvs.logic.playground.isometric {
 
 	public class IsometricPoint {
@@ -13,6 +15,13 @@ namespace pvs.logic.playground.isometric {
 		public IsometricPoint(Vector2 vector2) {
 			this.x = (int)vector2.x;
 			this.y = (int)vector2.y;
+		}
+
+		[NotNull] public IsometricPointNode ToJsonNode() {
+			return new IsometricPointNode {
+				x = x,
+				y = y
+			};
 		}
 
 		public static IsometricPoint operator +(IsometricPoint a, IsometricPoint b) => new IsometricPoint(a.x + b.x, a.y + b.y);
