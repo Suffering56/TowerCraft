@@ -40,6 +40,7 @@ namespace pvs.logic.playground.terrain {
 					// var spriteRenderer = blockInstance.GetComponent<SpriteRenderer>();
 					// spriteRenderer.color = new Color(1,1,1,0.5f);
 
+					
 					if (isEditor) blockInstance.name += ".Debug";
 				}
 			}
