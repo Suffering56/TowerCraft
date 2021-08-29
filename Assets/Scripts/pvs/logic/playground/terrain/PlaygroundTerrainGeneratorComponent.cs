@@ -1,3 +1,4 @@
+using System;
 using pvs.settings.debug;
 using pvs.utils;
 using UnityEngine;
@@ -16,6 +17,11 @@ namespace pvs.logic.playground.terrain {
 			DrawTerrain(false);
 		}
 
+		// private void Update()
+		// {
+		// 	Debug.Log("Update"); 
+		// }
+
 		private void DrawTerrain(bool isEditor) {
 			// чистим префаб от ранее сгенерированного ландшафта
 			VUnityUtils.CleanChildren(transform);
@@ -31,6 +37,9 @@ namespace pvs.logic.playground.terrain {
 					var blockInstance = Instantiate(initialState.terrainElementPrefab, gameObject.transform, true);
 					blockInstance.transform.position = new Vector3(x + xOffset, -y + yOffset, 0);
 					blockInstance.name = $"{initialState.terrainElementPrefab.name}[{x},{y}]";
+					// var spriteRenderer = blockInstance.GetComponent<SpriteRenderer>();
+					// spriteRenderer.color = new Color(1,1,1,0.5f);
+
 					if (isEditor) blockInstance.name += ".Debug";
 				}
 			}
