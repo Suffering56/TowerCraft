@@ -1,6 +1,5 @@
 ﻿using System;
 using pvs.attribute;
-using pvs.utils;
 using UnityEditor;
 using UnityEngine;
 using Zenject;
@@ -18,6 +17,7 @@ namespace pvs.logic.playground.camera {
 		[Inject] private IPlaygroundInitialState playgroundInitialState;
 
 		private VRectConstraints playgroundConstraints;
+		private VRangeFloat cameraZoomConstraints;
 		private Vector2 lastScreenSize;
 
 		private const float CAMERA_SPEED_COEFFICIENT = 0.01f;
@@ -33,6 +33,8 @@ namespace pvs.logic.playground.camera {
 			float yOffset = playgroundInitialState.terrainSize.y / 2;
 
 			playgroundConstraints = new VRectConstraints(-xOffset, -yOffset, xOffset, yOffset);
+			cameraZoomConstraints = initialState.cameraZoomConstraints;
+			
 			HandleScreenSizeChanges();
 		}
 
@@ -86,18 +88,19 @@ namespace pvs.logic.playground.camera {
 			if (delta == 0) return false;
 
 			var newCameraSize = camera.orthographicSize - delta * (CAMERA_ZOOM_COEFFICIENT * dynamicState.cameraZoomSpeed);
-			camera.orthographicSize = VMath.Clamp(newCameraSize, initialState.cameraZoomConstraints.min, initialState.cameraZoomConstraints.max);
+			camera.orthographicSize = cameraZoomConstraints.Clamp(newCameraSize);
+			camera.orthographicSize = newCameraSize;
 
 			return true;
 		}
 
 		private void CorrectCameraPosition() {
 			VRectConstraints cameraCenterConstraints = CalculateCameraPositionConstraints(camera, playgroundConstraints);
-
+			
 			var cameraPosition = camera.transform.position;
 			// может не отличаться от оригинальной позиции
 			var correctCameraPosition = cameraCenterConstraints.Clamp(cameraPosition);
-
+			
 			camera.transform.position = new Vector3(correctCameraPosition.x, correctCameraPosition.y, cameraPosition.z);
 		}
 		private void TrySwitchCameraState() {
@@ -121,7 +124,7 @@ namespace pvs.logic.playground.camera {
 
 		private void ClampMaxCameraZoom() {
 			var originOrthographicSize = camera.orthographicSize;
-			camera.orthographicSize = initialState.cameraZoomConstraints.max;
+			camera.orthographicSize = cameraZoomConstraints.max;
 
 			Vector2 playgroundSize = playgroundConstraints.max - playgroundConstraints.min;
 			Vector2 maxCameraViewSize = CalculateCameraViewSize(camera);
@@ -131,11 +134,11 @@ namespace pvs.logic.playground.camera {
 
 			if (maxRatio > 1)
 			{
-				float maxCameraZoom = initialState.cameraZoomConstraints.max / maxRatio;
-				initialState.cameraZoomConstraints.max = maxCameraZoom;
+				float maxCameraZoom = cameraZoomConstraints.max / maxRatio;
+				cameraZoomConstraints.max = maxCameraZoom;
 			}
 
-			camera.orthographicSize = originOrthographicSize;
+			camera.orthographicSize = cameraZoomConstraints.Clamp(originOrthographicSize);
 		}
 
 		private static VRectConstraints CalculateCameraPositionConstraints(Camera camera, VRectConstraints visibleSceneConstraints) {

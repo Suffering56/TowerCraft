@@ -4,6 +4,7 @@ using UnityEngine;
 namespace pvs.logic.playground.isometric {
 
 	public class IsometricPoint {
+	
 		public int x { get; }
 		public int y { get; }
 

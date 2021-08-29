@@ -22,7 +22,7 @@ namespace pvs.logic.playground.isometric {
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState = debugSettings;
 			isometricInfo = new IsometricInfo(debugSettings);
-
+			
 			InitializeGrid();
 			SwitchBuildingGridElementsActivity(debugSettings.buildingModeEnabled);
 		}

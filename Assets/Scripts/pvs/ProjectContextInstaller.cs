@@ -1,12 +1,14 @@
 using System;
 using System.Linq;
 using ModestTree;
+using pvs.input;
 using pvs.logic.playground;
 using pvs.logic.playground.building;
 using pvs.logic.playground.building.settings;
 using pvs.logic.playground.camera;
 using pvs.logic.playground.isometric;
 using pvs.settings.debug;
+using pvs.ui;
 using pvs.utils.code;
 using UnityEngine;
 using Zenject;
@@ -22,6 +24,7 @@ namespace pvs {
 			BindDebugSettings();
 			BindPlaygroundCameraDependencies();
 			BindPlaygroundDependencies();
+			BindUIDependencies();
 		}
 
 		private void BindDebugSettings() {
@@ -30,7 +33,7 @@ namespace pvs {
 				.AsSingle()
 				.NonLazy();
 		}
-		
+
 		private void BindPlaygroundCameraDependencies() {
 			BindInterfacesAndSelfTo<PlaygroundCameraState>()
 				.AsSingle();
@@ -48,6 +51,13 @@ namespace pvs {
 			
 			BindInterfacesAndSelfTo<IsometricInfo>()
 				.AsSingle();
+		}
+		
+		private void BindUIDependencies() {
+			Bind<InputCommandsRegistry>()
+				.FromComponentOn(GameObject.Find("UIView"))
+				.AsSingle()
+				.NonLazy();
 		}
 
 		private FromBinderNonGeneric BindInterfacesAndSelfTo<T>() {
