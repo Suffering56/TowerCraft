@@ -1,13 +1,13 @@
 ﻿using JetBrains.Annotations;
-using UnityEditor;
 using UnityEngine;
+
 namespace pvs.utils {
 	public static class VUnityUtils {
 
-		private static readonly ChildPredicate AlwaysTruePredicate = child => true;
+		private static readonly ChildPredicate ALWAYS_TRUE_PREDICATE = child => true;
 
 		public static void CleanChildren([NotNull] Transform transform) {
-			CleanChildren(transform, AlwaysTruePredicate);
+			CleanChildren(transform, ALWAYS_TRUE_PREDICATE);
 		}
 
 		public static void CleanChildren([NotNull] Transform transform, ChildPredicate childPredicate) {

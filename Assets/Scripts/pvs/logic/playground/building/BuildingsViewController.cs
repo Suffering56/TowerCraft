@@ -3,9 +3,11 @@ using pvs.input.command;
 using pvs.logic.playground.building.settings;
 using pvs.logic.playground.isometric;
 using pvs.settings.debug;
+using pvs.ui.utils;
 using pvs.utils;
 using UnityEngine;
 using Zenject;
+using static pvs.input.InputCommandType;
 
 namespace pvs.logic.playground.building {
 
@@ -13,7 +15,8 @@ namespace pvs.logic.playground.building {
 
 		[Inject] private readonly IPlaygroundBuildingsState playgroundBuildingsState;
 		[Inject] private readonly IIsometricInfo isometricInfo;
-		[Inject] private readonly InputCommandsRegistry inputCommandsRegistry;
+		[Inject] private readonly InputCommandsRegistry inputRegistry;
+		[Inject] private readonly CursorVisibilitySwitcher cursorVisibilitySwitcher;
 		[SerializeField] private AudioSource errorAudioSource;
 
 		private Camera playgroundCamera;
@@ -25,33 +28,33 @@ namespace pvs.logic.playground.building {
 		}
 
 		private void Update() {
-			if (Input.GetKeyUp(KeyCode.R)) {
+			if (inputRegistry.HasCommand(RESET_BUILDINGS)) {
 				VUnityUtils.CleanChildren(transform);
 				playgroundBuildingsState.Reset();
 				return;
 			}
 
-			if (Input.GetKeyUp(KeyCode.S)) {
+			if (inputRegistry.HasCommand(SAVE_BUILDINGS)) {
 				playgroundBuildingsState.Save();
 				return;
 			}
 
-			var switchBuildingCommand = inputCommandsRegistry.GetCommand<SwitchUnderConstructionBuildingTypeCommand>(InputCommandType.SWITCH_UNDER_CONSTRUCTION_BUILDING_TYPE);
+			var switchBuildingCommand = inputRegistry.GetCommand<ParametrizedCommand<BuildingType>>(SELECT_BUILDING_TEMPLATE);
 			if (switchBuildingCommand != null) {
 				if (underConstructionBuilding) {
 					CancelBuildingProcess();
 				}
 
-				StartBuildingProcess(switchBuildingCommand.GetBuildingType());
-				return;
-			}
-
-			if (inputCommandsRegistry.HasCommand(InputCommandType.DISABLE_BUILDING_MODE) && underConstructionBuilding) {
-				CancelBuildingProcess();
+				StartBuildingProcess(switchBuildingCommand.GetParam());
 				return;
 			}
 
 			if (underConstructionBuilding) {
+				if (inputRegistry.HasAnyOfCommands(DISABLE_BUILDING_MODE, RIGHT_MOUSE_BUTTON_UP)) {
+					CancelBuildingProcess();
+					return;
+				}
+				
 				var nearest = FindNearestCenterGridPoint();
 				underConstructionBuilding.transform.position = new Vector3(nearest.x, nearest.y, transform.position.z);
 
@@ -62,8 +65,7 @@ namespace pvs.logic.playground.building {
 
 				var nearestGrid = isometricInfo.ConvertToGridPosition(nearest);
 
-				// if (inputRegistry.IsCommandActive(UICommand.FINISH_BUILDING_PROCESS)) {
-				if (Input.GetKeyUp(Constants.FINISH_BUILD_KEY)) {
+				if (inputRegistry.HasCommand(LEFT_MOUSE_BUTTON_UP)) {
 					FinishBuildingProcess(nearestGrid);
 				} else {
 					playgroundBuildingsState.UpdateUnderCursorPoint(nearestGrid);
@@ -88,12 +90,14 @@ namespace pvs.logic.playground.building {
 			buildingGameObject.transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
 
 			underConstructionBuilding = buildingGameObject;
+			cursorVisibilitySwitcher.HideCursor();
 		}
 
 		private void FinishBuildingProcess(IsometricPoint finalBuildingPosition) {
 			bool success = playgroundBuildingsState.FinishBuildProcess(finalBuildingPosition);
 			if (success) {
 				underConstructionBuilding = null;
+				cursorVisibilitySwitcher.ShowCursor();
 			} else {
 				errorAudioSource.Play();
 			}
@@ -106,6 +110,7 @@ namespace pvs.logic.playground.building {
 			DestroyImmediate(underConstructionBuilding);
 
 			underConstructionBuilding = null;
+			cursorVisibilitySwitcher.ShowCursor();
 		}
 	}
 }

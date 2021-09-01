@@ -8,7 +8,7 @@ using pvs.logic.playground.building.settings;
 using pvs.logic.playground.camera;
 using pvs.logic.playground.isometric;
 using pvs.settings.debug;
-using pvs.ui;
+using pvs.ui.utils;
 using pvs.utils.code;
 using UnityEngine;
 using Zenject;
@@ -25,6 +25,7 @@ namespace pvs {
 			BindPlaygroundCameraDependencies();
 			BindPlaygroundDependencies();
 			BindUIDependencies();
+			BindOtherDependencies();
 		}
 
 		private void BindDebugSettings() {
@@ -55,9 +56,14 @@ namespace pvs {
 		
 		private void BindUIDependencies() {
 			Bind<InputCommandsRegistry>()
-				.FromComponentOn(GameObject.Find("UIView"))
+				.FromComponentOn(GameObject.Find("InputManager"))
 				.AsSingle()
 				.NonLazy();
+		}
+
+		private void BindOtherDependencies() {
+			BindInterfacesAndSelfTo<CursorVisibilitySwitcher>()
+				.AsSingle();
 		}
 
 		private FromBinderNonGeneric BindInterfacesAndSelfTo<T>() {

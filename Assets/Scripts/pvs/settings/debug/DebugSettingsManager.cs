@@ -25,6 +25,8 @@ namespace pvs.settings.debug {
 
 			_instance = this;
 			runtime = true;
+
+			GameObject.Find("Point000").SetActive(false);
 		}
 
 		private void OnDrawGizmos() {

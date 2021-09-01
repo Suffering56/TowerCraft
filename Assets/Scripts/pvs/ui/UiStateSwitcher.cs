@@ -11,17 +11,16 @@ namespace pvs.ui {
 		private GameObject buildingsPanel;
 
 		private void Start() {
-			defaultPanel = transform.Find("DefaultPanel").gameObject;
-			buildingsPanel = transform.Find("BuildingsPanel").gameObject;
-			buildingsPanel.SetActive(false);
+			defaultPanel = transform.Find("DefaultUIPanel").gameObject;
+			buildingsPanel = transform.Find("AllBuildingsUIPanel").gameObject;
 		}
 
 		private void Update() {
-			if (inputCommandsRegistry.HasCommand(InputCommandType.SHOW_BUILDINGS_PANEL)) {
+			if (inputCommandsRegistry.HasCommand(InputCommandType.SHOW_ALL_BUILDINGS_PANEL)) {
 				defaultPanel.SetActive(false);
 				buildingsPanel.SetActive(true);
 			}
-
+			
 			if (inputCommandsRegistry.HasCommand(InputCommandType.DISABLE_BUILDING_MODE)) {
 				defaultPanel.SetActive(true);
 				buildingsPanel.SetActive(false);

@@ -42,14 +42,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: TerrainBackground
+    uniqueID: 4221446277
+    locked: 0
   - name: Terrain
     uniqueID: 3891322979
     locked: 0
-  - name: Buildings
-    uniqueID: 2675005605
-    locked: 0
   - name: IsometricGrid
     uniqueID: 528254715
+    locked: 0
+  - name: Buildings
+    uniqueID: 2675005605
     locked: 0
   - name: UI
     uniqueID: 1362363809

@@ -4,17 +4,17 @@ using UnityEditor;
 using UnityEngine;
 using Zenject;
 namespace pvs.logic.playground.camera {
-	
+
 	/**
 	* Allows player to move camera as in strategy games like "WarCraft 3"
 	*/
 	public class PlaygroundCameraController : MonoBehaviour {
-		
+
 		private new Camera camera;
+		[SerializeField] private Transform terrainBackground;
 
 		[Inject] private IPlaygroundCameraState dynamicState;
 		[Inject] private IPlaygroundCameraInitialState initialState;
-		[Inject] private IPlaygroundInitialState playgroundInitialState;
 
 		private VRectConstraints playgroundConstraints;
 		private VRangeFloat cameraZoomConstraints;
@@ -29,12 +29,15 @@ namespace pvs.logic.playground.camera {
 		private void Start() {
 			camera = gameObject.GetComponent<Camera>();
 
-			float xOffset = playgroundInitialState.terrainSize.x / 2;
-			float yOffset = playgroundInitialState.terrainSize.y / 2;
-
-			playgroundConstraints = new VRectConstraints(-xOffset, -yOffset, xOffset, yOffset);
-			cameraZoomConstraints = initialState.cameraZoomConstraints;
+			playgroundConstraints = new VRectConstraints(
+				terrainBackground.position.x,
+				terrainBackground.position.y - terrainBackground.localScale.y,
+				terrainBackground.position.x + terrainBackground.localScale.x,
+				terrainBackground.position.y
+			);
 			
+			cameraZoomConstraints = initialState.cameraZoomConstraints;
+
 			HandleScreenSizeChanges();
 		}
 
@@ -44,8 +47,7 @@ namespace pvs.logic.playground.camera {
 
 			if (!active) return;
 
-			if (screenSizeChanged | TryMoveCamera() | TryZoomCamera())
-			{
+			if (screenSizeChanged | TryMoveCamera() | TryZoomCamera()) {
 				CorrectCameraPosition();
 			}
 		}
@@ -55,26 +57,19 @@ namespace pvs.logic.playground.camera {
 			int x = 0;
 			int y = 0;
 
-			if (Input.mousePosition.x <= MOUSE_EDGE_OFFSET)
-			{
+			if (Input.mousePosition.x <= MOUSE_EDGE_OFFSET) {
 				x = -1;
-			}
-			else if (Input.mousePosition.x >= lastScreenSize.x - MOUSE_EDGE_OFFSET)
-			{
+			} else if (Input.mousePosition.x >= lastScreenSize.x - MOUSE_EDGE_OFFSET) {
 				x = 1;
 			}
 
-			if (Input.mousePosition.y <= MOUSE_EDGE_OFFSET)
-			{
+			if (Input.mousePosition.y <= MOUSE_EDGE_OFFSET) {
 				y = -1;
-			}
-			else if (Input.mousePosition.y >= lastScreenSize.y - MOUSE_EDGE_OFFSET)
-			{
+			} else if (Input.mousePosition.y >= lastScreenSize.y - MOUSE_EDGE_OFFSET) {
 				y = 1;
 			}
 
-			if (x != 0 || y != 0)
-			{
+			if (x != 0 || y != 0) {
 				Vector3 direction = new Vector3(x, y);
 				camera.transform.position += direction * (CAMERA_SPEED_COEFFICIENT * dynamicState.cameraMoveSpeed);
 				return true;
@@ -89,32 +84,29 @@ namespace pvs.logic.playground.camera {
 
 			var newCameraSize = camera.orthographicSize - delta * (CAMERA_ZOOM_COEFFICIENT * dynamicState.cameraZoomSpeed);
 			camera.orthographicSize = cameraZoomConstraints.Clamp(newCameraSize);
-			camera.orthographicSize = newCameraSize;
 
 			return true;
 		}
 
 		private void CorrectCameraPosition() {
 			VRectConstraints cameraCenterConstraints = CalculateCameraPositionConstraints(camera, playgroundConstraints);
-			
+
 			var cameraPosition = camera.transform.position;
 			// может не отличаться от оригинальной позиции
 			var correctCameraPosition = cameraCenterConstraints.Clamp(cameraPosition);
-			
+
 			camera.transform.position = new Vector3(correctCameraPosition.x, correctCameraPosition.y, cameraPosition.z);
 		}
 		private void TrySwitchCameraState() {
 
-			if (Input.GetKeyUp(initialState.cameraStopKey))
-			{
+			if (Input.GetKeyUp(initialState.cameraStopKey)) {
 				active = !active;
 			}
 		}
 
 		private bool HandleScreenSizeChanges() {
 			var actualScreenSize = GetScreenSize();
-			if (actualScreenSize != lastScreenSize)
-			{
+			if (actualScreenSize != lastScreenSize) {
 				ClampMaxCameraZoom();
 				lastScreenSize = actualScreenSize;
 				return true;
@@ -132,8 +124,7 @@ namespace pvs.logic.playground.camera {
 			Vector2 ratio = maxCameraViewSize / playgroundSize;
 			float maxRatio = Math.Max(ratio.x, ratio.y);
 
-			if (maxRatio > 1)
-			{
+			if (maxRatio > 1) {
 				float maxCameraZoom = cameraZoomConstraints.max / maxRatio;
 				cameraZoomConstraints.max = maxCameraZoom;
 			}

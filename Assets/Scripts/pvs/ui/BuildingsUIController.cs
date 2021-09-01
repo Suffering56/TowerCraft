@@ -5,9 +5,9 @@ namespace pvs.ui {
 	
 	public class BuildingsUIController : AbstractUIController {
 		private void Start() {
-			RegisterButtonClickCommand("BuildBarracksButton", new SwitchUnderConstructionBuildingTypeCommand(BuildingType.BARRACKS));
-			RegisterButtonClickCommand("BuildLargeBarracksButton", new SwitchUnderConstructionBuildingTypeCommand(BuildingType.LARGE_BARRACKS));
-			RegisterButtonClickCommand("BuildBashenkaButton", new SwitchUnderConstructionBuildingTypeCommand(BuildingType.BASHENKA));
+			RegisterButtonClickCommand("BuildBarracksButton", new ParametrizedCommand<BuildingType>(BuildingType.BARRACKS, true));
+			RegisterButtonClickCommand("BuildLargeBarracksButton", new ParametrizedCommand<BuildingType>(BuildingType.LARGE_BARRACKS, true));
+			RegisterButtonClickCommand("BuildBashenkaButton", new ParametrizedCommand<BuildingType>(BuildingType.BASHENKA, true));
 			RegisterSimpleButtonClickCommand("CancelBuildingProcessButton", InputCommandType.DISABLE_BUILDING_MODE);
 		}
 	}

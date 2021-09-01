@@ -1,10 +1,17 @@
 {
     "buildings": [
         {
+            "buildingType": 2,
+            "position": {
+                "x": 9,
+                "y": 19
+            }
+        },
+        {
             "buildingType": 0,
             "position": {
-                "x": 1,
-                "y": 1
+                "x": 0,
+                "y": 0
             }
         },
         {
@@ -17,8 +24,15 @@
         {
             "buildingType": 2,
             "position": {
-                "x": 9,
-                "y": 7
+                "x": 0,
+                "y": 38
+            }
+        },
+        {
+            "buildingType": 0,
+            "position": {
+                "x": 18,
+                "y": 38
             }
         }
     ]
