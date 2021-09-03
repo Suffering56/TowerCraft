@@ -92,6 +92,7 @@
      <Compile Include="Assets\Scripts\pvs\input\command\KeyUpCommand.cs" />
      <Compile Include="Assets\Scripts\pvs\input\command\SimpleCommand.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\isometric\IsometricGridElementController.cs" />
+     <Compile Include="Assets\Scripts\pvs\ui\utils\ICursorVisibilityChangeListener.cs" />
      <None Include="Assets\playgroundState.json" />
      <Reference Include="UnityEngine">
      <HintPath>F:/02_Unity/Unity/2021.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
