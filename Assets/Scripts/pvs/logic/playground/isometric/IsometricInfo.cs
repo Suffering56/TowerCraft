@@ -30,7 +30,7 @@ namespace pvs.logic.playground.isometric {
 		private static readonly Vector2 ORIGIN_ELEMENT_SIZE = new Vector2(0.5f, 0.25f);
 
 		public IsometricInfo(IPlaygroundInitialState parent) {
-			var terrainSize = parent.terrainSize;
+			var terrainSize = parent.terrainRect.size;
 
 			elementSize = parent.isometricElementSize;
 			worldStep = elementSize / 2;

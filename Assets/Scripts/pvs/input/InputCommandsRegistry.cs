@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using pvs.input.command;
 using pvs.utils.code;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UIElements;
 
 namespace pvs.input {
@@ -62,7 +63,8 @@ namespace pvs.input {
 
 			return false;
 		}
-
+		
+		// TODO: как-то я не подумал что этот не всегда будет вызываться первым и соответственно эта логика нихрена не работает
 		private void Update() {
 			if (currentCommand == null || !currentCommand.IsFromUI()) { // чтобы клик мышкой по UI кнопке не создавал LEFT_MOUSE_BUTTON_UP событие в том же фрейме
 				if (Input.GetMouseButtonUp((int)MouseButton.LeftMouse)) {

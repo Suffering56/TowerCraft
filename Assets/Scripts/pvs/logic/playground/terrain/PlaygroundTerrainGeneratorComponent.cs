@@ -2,10 +2,13 @@ using pvs.settings.debug;
 using pvs.utils;
 using UnityEngine;
 using Zenject;
+
 namespace pvs.logic.playground.terrain {
 	public class PlaygroundTerrainGeneratorComponent : MonoBehaviour, IDebugSettingsRefreshListener {
 
 		[Inject] private IPlaygroundInitialState initialState;
+		[SerializeField] private GameObject backgroundPrefab;
+		private Rect terrainRect => initialState.terrainRect;
 
 		public void OnDebugSettingsRefreshed(DebugSettings debugSettings) {
 			initialState = debugSettings;
@@ -19,21 +22,28 @@ namespace pvs.logic.playground.terrain {
 		private void DrawTerrain(bool isEditor) {
 			// чистим префаб от ранее сгенерированного ландшафта
 			VUnityUtils.CleanChildren(transform);
+			// DrawBackground(isEditor);
 
 			var boxCollider = GetComponent<BoxCollider2D>();
-			boxCollider.size = initialState.terrainSize;
+			boxCollider.size = terrainRect.size;
 
-			float xOffset = -initialState.terrainSize.x / 2;
-			float yOffset = initialState.terrainSize.y / 2;
-
-			for (int y = 0; y < initialState.terrainSize.y; y++) {
-				for (int x = 0; x < initialState.terrainSize.x; x++) {
+			for (int y = 0; y < terrainRect.size.y; y++) {
+				for (int x = 0; x < terrainRect.size.x; x++) {
 					var blockInstance = Instantiate(initialState.terrainElementPrefab, gameObject.transform, true);
-					blockInstance.transform.position = new Vector3(x + xOffset, -y + yOffset, 0);
+					blockInstance.transform.position = new Vector3(x + terrainRect.position.x, -y + terrainRect.position.y, 0);
 					blockInstance.name = $"{initialState.terrainElementPrefab.name}[{x},{y}]";
 					if (isEditor) blockInstance.name += ".Debug";
 				}
 			}
+		}
+
+		private void DrawBackground(bool isEditor) {
+			var blockInstance = Instantiate(backgroundPrefab, gameObject.transform, true);
+			blockInstance.transform.localScale = (terrainRect.size * 1.1f).ToVector3(1);
+			blockInstance.transform.position = Vector3.zero;
+
+			blockInstance.name = $"{backgroundPrefab.name}";
+			if (isEditor) blockInstance.name += ".Debug";
 		}
 	}
 }

@@ -6,6 +6,7 @@ using pvs.settings.debug;
 using pvs.ui.utils;
 using pvs.utils;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Zenject;
 using static pvs.input.InputCommandType;
 
@@ -65,7 +66,7 @@ namespace pvs.logic.playground.building {
 
 				var nearestGrid = isometricInfo.ConvertToGridPosition(nearest);
 
-				if (inputRegistry.HasCommand(LEFT_MOUSE_BUTTON_UP)) {
+				if (Input.GetMouseButtonUp((int)MouseButton.LeftMouse)) {
 					FinishBuildingProcess(nearestGrid);
 				} else {
 					playgroundBuildingsState.UpdateUnderCursorPoint(nearestGrid);

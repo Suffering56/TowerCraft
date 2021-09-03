@@ -11,12 +11,11 @@ namespace pvs.logic.playground.camera {
 	public class PlaygroundCameraController : MonoBehaviour {
 
 		private new Camera camera;
-		[SerializeField] private Transform terrainBackground;
 
 		[Inject] private IPlaygroundCameraState dynamicState;
 		[Inject] private IPlaygroundCameraInitialState initialState;
+		[Inject] private IPlaygroundInitialState playgroundInitialState;
 
-		private VRectConstraints playgroundConstraints;
 		private VRangeFloat cameraZoomConstraints;
 		private Vector2 lastScreenSize;
 
@@ -24,31 +23,21 @@ namespace pvs.logic.playground.camera {
 		private const float CAMERA_ZOOM_COEFFICIENT = 0.1f;
 		private const float MOUSE_EDGE_OFFSET = 5f;
 
-		private bool active = true;
+		private Rect terrainSize => playgroundInitialState.terrainRect;
 
 		private void Start() {
 			camera = gameObject.GetComponent<Camera>();
-
-			playgroundConstraints = new VRectConstraints(
-				terrainBackground.position.x,
-				terrainBackground.position.y - terrainBackground.localScale.y,
-				terrainBackground.position.x + terrainBackground.localScale.x,
-				terrainBackground.position.y
-			);
-			
 			cameraZoomConstraints = initialState.cameraZoomConstraints;
 
-			HandleScreenSizeChanges();
+			CorrectCameraPosition(GetScreenSize());
 		}
 
 		private void LateUpdate() {
-			bool screenSizeChanged = HandleScreenSizeChanges();
-			TrySwitchCameraState();
+			var actualScreenSize = GetScreenSize();
+			var screenSizeChanged = actualScreenSize != lastScreenSize;
 
-			if (!active) return;
-
-			if (screenSizeChanged | TryMoveCamera() | TryZoomCamera()) {
-				CorrectCameraPosition();
+			if (screenSizeChanged || TryMoveCamera() | TryZoomCamera()) {
+				CorrectCameraPosition(actualScreenSize);
 			}
 		}
 
@@ -88,37 +77,30 @@ namespace pvs.logic.playground.camera {
 			return true;
 		}
 
-		private void CorrectCameraPosition() {
-			VRectConstraints cameraCenterConstraints = CalculateCameraPositionConstraints(camera, playgroundConstraints);
-
-			var cameraPosition = camera.transform.position;
-			// может не отличаться от оригинальной позиции
-			var correctCameraPosition = cameraCenterConstraints.Clamp(cameraPosition);
-
-			camera.transform.position = new Vector3(correctCameraPosition.x, correctCameraPosition.y, cameraPosition.z);
-		}
-		private void TrySwitchCameraState() {
-
-			if (Input.GetKeyUp(initialState.cameraStopKey)) {
-				active = !active;
-			}
-		}
-
-		private bool HandleScreenSizeChanges() {
-			var actualScreenSize = GetScreenSize();
+		private void CorrectCameraPosition(Vector2 actualScreenSize) {
 			if (actualScreenSize != lastScreenSize) {
 				ClampMaxCameraZoom();
 				lastScreenSize = actualScreenSize;
-				return true;
 			}
-			return false;
+
+			//
+			VRectConstraints cameraConstraints = CalculateCameraConstraints(actualScreenSize);
+
+			Vector2 cameraPivotOffset = CalculateCameraViewSize(camera) / 2f;
+			var cameraPivotConstraints = new VRectConstraints(cameraConstraints.min + cameraPivotOffset, cameraConstraints.max - cameraPivotOffset);
+
+			var cameraPosition = camera.transform.position;
+			// может не отличаться от оригинальной позиции
+			var correctCameraPosition = cameraPivotConstraints.Clamp(cameraPosition);
+
+			camera.transform.position = new Vector3(correctCameraPosition.x, correctCameraPosition.y, cameraPosition.z);
 		}
 
 		private void ClampMaxCameraZoom() {
 			var originOrthographicSize = camera.orthographicSize;
 			camera.orthographicSize = cameraZoomConstraints.max;
 
-			Vector2 playgroundSize = playgroundConstraints.max - playgroundConstraints.min;
+			Vector2 playgroundSize = playgroundInitialState.terrainRect.size;
 			Vector2 maxCameraViewSize = CalculateCameraViewSize(camera);
 
 			Vector2 ratio = maxCameraViewSize / playgroundSize;
@@ -132,13 +114,19 @@ namespace pvs.logic.playground.camera {
 			camera.orthographicSize = cameraZoomConstraints.Clamp(originOrthographicSize);
 		}
 
-		private static VRectConstraints CalculateCameraPositionConstraints(Camera camera, VRectConstraints visibleSceneConstraints) {
-			// На такое расстояние нужно сдвинуть камеру относительно любого края playground-а, чтобы не выйти за его пределы.
-			Vector2 cameraOffset = CalculateCameraViewSize(camera) / 2f;
+		private VRectConstraints CalculateCameraConstraints(Vector2 actualScreenSize) {
+			var bottomUiPanelScreenHeight = actualScreenSize.y * playgroundInitialState.bottomUIPanelRelativeHeight;
+
+			var minPoint = camera.ScreenToWorldPoint(new Vector3(0, actualScreenSize.y, 0));
+			var maxPoint = camera.ScreenToWorldPoint(new Vector3(actualScreenSize.x, actualScreenSize.y + bottomUiPanelScreenHeight, 0));
+
+			var bottomUIPanelSize = maxPoint - minPoint;
 
 			return new VRectConstraints(
-				visibleSceneConstraints.min + cameraOffset,
-				visibleSceneConstraints.max - cameraOffset
+				terrainSize.position.x,
+				terrainSize.position.y - terrainSize.height - bottomUIPanelSize.y,
+				terrainSize.position.x + terrainSize.width,
+				terrainSize.position.y
 			);
 		}
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace pvs.settings.debug {
 
 		[SerializeField]
 		private List<GameObject> refreshSubscribers = new List<GameObject>();
-		
+
 		private static DebugSettingsManager _instance;
 
 		private bool runtime = false;
@@ -31,7 +32,7 @@ namespace pvs.settings.debug {
 
 		private void OnDrawGizmos() {
 			if (runtime) return;
-			
+
 			if (triggerRefresh) {
 				OnSettingsRefreshed();
 				triggerRefresh = false;
@@ -53,7 +54,12 @@ namespace pvs.settings.debug {
 			var debugSettings = GetComponent<DebugSettings>();
 
 			foreach (var listener in listeners) {
-				listener.OnDebugSettingsRefreshed(debugSettings);
+				try {
+					listener.OnDebugSettingsRefreshed(debugSettings);
+				}
+				catch (Exception e) {
+					Debug.LogError(e);
+				}
 			}
 		}
 	}

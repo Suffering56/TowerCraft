@@ -6,9 +6,10 @@ namespace pvs.logic.playground {
 
 	[ZenjectComponent]
 	public class PlaygroundInitialState : IPlaygroundInitialState {
-		public Vector2 terrainSize { get; }
+		public Rect terrainRect { get; }
 		public GameObject terrainElementPrefab { get; }
 		public Vector2 isometricElementSize { get; }
+		public float bottomUIPanelRelativeHeight => debugSettings.bottomUIPanelRelativeHeight;
 		public bool buildingModeEnabled { get; }
 		public bool showDebugGrid { get; }
 
@@ -17,7 +18,7 @@ namespace pvs.logic.playground {
 		public PlaygroundInitialState(DebugSettings debugSettings) {
 			this.debugSettings = debugSettings;
 
-			terrainSize = debugSettings.terrainSize;
+			terrainRect = debugSettings.terrainRect;
 			terrainElementPrefab = debugSettings.terrainElementPrefab;
 			isometricElementSize = debugSettings.isometricElementSize;
 

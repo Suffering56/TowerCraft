@@ -12,19 +12,21 @@ namespace pvs.settings.debug {
 	[ZenjectComponent]
 	public class DebugSettings : MonoBehaviour, IPlaygroundInitialState {
 
-		[SerializeField]
-		[Tooltip("terrain size in unity units/count of grass sprites will be x * y")]
-		private Vector2 _terrainSize;
-		public Vector2 terrainSize => _terrainSize;
-
-		[SerializeField]
-		private GameObject _terrainElementPrefab;
+		[SerializeField] private GameObject _terrainElementPrefab;
 		public GameObject terrainElementPrefab => _terrainElementPrefab;
 
+		[Tooltip("terrain size in unity units/count of grass sprites will be x * y")]
+		[SerializeField] private Vector2 _terrainSize;
+		public Rect terrainRect => new Rect(-_terrainSize.x / 2, _terrainSize.y / 2, _terrainSize.x, _terrainSize.y);
+
 		[SpaceAttribute(20)]
-		[SerializeField]
-		private float _isometricGridHeight = 0.25f;
+		[SerializeField] private float _isometricGridHeight = 0.25f;
 		public Vector2 isometricElementSize => new Vector2(_isometricGridHeight * 2, _isometricGridHeight);
+
+		[SpaceAttribute(20)]
+		[SerializeField] private RectTransform _mainUICanvas;
+		[SerializeField] private RectTransform _bottomMainUIPanel;
+		public float bottomUIPanelRelativeHeight => _bottomMainUIPanel.rect.height / _mainUICanvas.rect.height;
 
 		[SerializeField]
 		private bool _buildingModeEnabled = true;
@@ -55,11 +57,6 @@ namespace pvs.settings.debug {
 		[SerializeField]
 		private VRangeFloat _cameraZoomConstraints = new VRangeFloat(0.4f, 2.1f);
 		public VRangeFloat cameraZoomConstraints => _cameraZoomConstraints;
-
-		[SerializeField]
-		private KeyCode _cameraStopKey = KeyCode.E;
-
-		public KeyCode cameraStopKey => _cameraStopKey;
 
 		public Color GetIsometricGridColor(GridPointStatus status) {
 			return status switch {
