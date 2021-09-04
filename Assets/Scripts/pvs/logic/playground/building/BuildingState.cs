@@ -29,6 +29,7 @@ namespace pvs.logic.playground.building {
 			this.Point = point;
 			instanceGameObject.name += $"[{id}]";
 			instanceGameObject.GetComponent<SpriteRenderer>().sortingOrder = point.y;
+			instanceGameObject.GetComponent<BuildingController>().Init(this);
 		}
 
 		public BuildingNode ToJsonNode() {

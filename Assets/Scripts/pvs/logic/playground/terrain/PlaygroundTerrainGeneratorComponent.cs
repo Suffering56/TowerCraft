@@ -1,12 +1,17 @@
+using pvs.input;
+using pvs.input.command;
 using pvs.settings.debug;
 using pvs.utils;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
 
 namespace pvs.logic.playground.terrain {
-	public class PlaygroundTerrainGeneratorComponent : MonoBehaviour, IDebugSettingsRefreshListener {
+	public class PlaygroundTerrainGeneratorComponent : MonoBehaviour, IDebugSettingsRefreshListener, IPointerClickHandler {
 
 		[Inject] private IPlaygroundInitialState initialState;
+		[Inject] private InputCommandsRegistry inputRegistry;
+		
 		[SerializeField] private GameObject backgroundPrefab;
 		private Rect terrainRect => initialState.terrainRect;
 
@@ -44,6 +49,10 @@ namespace pvs.logic.playground.terrain {
 
 			blockInstance.name = $"{backgroundPrefab.name}";
 			if (isEditor) blockInstance.name += ".Debug";
+		}
+
+		public void OnPointerClick(PointerEventData eventData) {
+			inputRegistry.RegisterCommand(new SimpleCommand(InputCommandType.TERRAIN_CLICK));
 		}
 	}
 }

@@ -50,30 +50,35 @@ namespace pvs.logic.playground.building {
 			}
 
 			if (underConstructionBuilding) {
-				if (inputRegistry.HasAnyOfCommands(DISABLE_BUILDING_MODE, RIGHT_MOUSE_BUTTON_UP)) {
-					CancelBuildingProcess();
-					return;
-				}
-				
-				var nearest = FindNearestCenterGridPoint();
-				underConstructionBuilding.transform.position = new Vector3(nearest.x, nearest.y, transform.position.z);
-
-				if (nearest == Constants.NULL_VECTOR_2) {
-					playgroundBuildingsState.UpdateUnderCursorPoint(null);
-					return;
-				}
-
-				var nearestGrid = isometricInfo.ConvertToGridPosition(nearest);
-
-				if (inputRegistry.HasCommand(LEFT_MOUSE_BUTTON_UP)) {
-					FinishBuildingProcess(nearestGrid);
-				} else {
-					playgroundBuildingsState.UpdateUnderCursorPoint(nearestGrid);
-				}
+				HandleBuildingModeCommands();
+				return;
 			}
 		}
 
-		private Vector2 FindNearestCenterGridPoint() {
+		private void HandleBuildingModeCommands() {
+			if (inputRegistry.HasCommand(DISABLE_BUILDING_MODE) || inputRegistry.IsRightMouseButtonUp()) {
+				CancelBuildingProcess();
+				return;
+			}
+
+			var nearest = FindNearestCenterGridWorldPoint();
+			underConstructionBuilding.transform.position = new Vector3(nearest.x, nearest.y, transform.position.z);
+
+			if (nearest == Constants.NULL_VECTOR_2) {
+				playgroundBuildingsState.UpdateUnderCursorPoint(null);
+				return;
+			}
+
+			var nearestGrid = isometricInfo.ConvertToGridPosition(nearest);
+
+			if (inputRegistry.IsLeftMouseButtonUp()) {
+				FinishBuildingProcess(nearestGrid);
+			} else {
+				playgroundBuildingsState.UpdateUnderCursorPoint(nearestGrid);
+			}
+		}
+
+		private Vector2 FindNearestCenterGridWorldPoint() {
 			var mousePosition = GetMouseWorldPosition();
 			return isometricInfo.GetNearestGridElementCenter(mousePosition) ?? Constants.NULL_VECTOR_2;
 		}

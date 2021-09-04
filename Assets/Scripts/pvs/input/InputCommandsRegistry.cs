@@ -4,6 +4,7 @@ using pvs.input.command;
 using pvs.utils.code;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static pvs.input.InputCommandType;
 
 namespace pvs.input {
 
@@ -16,10 +17,8 @@ namespace pvs.input {
 
 		private IInputCommand writeCommand; // current update command: сюда просто запоминаем команду с текущего апдейта
 		private IInputCommand readCommand;  // prev update command: а с этой непосредственно работаем
-
-		public void RegisterSimpleCommand(InputCommandType commandType) {
-			RegisterCommand(new SimpleCommand(commandType));
-		}
+		
+		 // TODO: если появятся конфликты нужно сделать UI-команды более приоритетными
 
 		// ReSharper disable Unity.PerformanceAnalysis
 		public void RegisterCommand(IInputCommand command) {
@@ -40,6 +39,14 @@ namespace pvs.input {
 			return commandTypes.Any(HasCommand);
 		}
 
+		public bool IsLeftMouseButtonUp() {
+			return Input.GetMouseButtonUp((int)MouseButton.LeftMouse);
+		}
+
+		public bool IsRightMouseButtonUp() {
+			return Input.GetMouseButtonUp((int)MouseButton.RightMouse);
+		}
+
 		// ReSharper disable Unity.PerformanceAnalysis
 		[CanBeNull]
 		public T GetCommand<T>(InputCommandType commandType) where T : class, IInputCommand {
@@ -55,49 +62,19 @@ namespace pvs.input {
 			return null;
 		}
 
-		public bool HasKeyUpCommand(KeyCode code) {
-			if (readCommand?.GetCommandType() != InputCommandType.KEY_UP) {
-				return false;
-			}
-
-			if (readCommand is KeyUpCommand cmd) {
-				return cmd.GetKeyCode() == code;
-			}
-
-			return false;
-		}
-
 		private void Update() {
-			if (writeCommand == null || !writeCommand.IsFromUI()) {
-
-				// если команда является IsFromUI, значит игрок кликнул мышкой на кнопку
-				// поэтому этот клик мы не будем регистрировать как команду
-				// иначе словим "cannot register command {command}, because registry already has another command"
-				// ибо клик мышкой и UI-команда прилетают в одном фрейме
-
-				if (Input.GetMouseButtonUp((int)MouseButton.LeftMouse)) {
-					RegisterSimpleCommand(InputCommandType.LEFT_MOUSE_BUTTON_UP);
-					return;
-				}
-			}
-
-			if (Input.GetMouseButtonUp((int)MouseButton.RightMouse)) {
-				RegisterSimpleCommand(InputCommandType.RIGHT_MOUSE_BUTTON_UP);
-				return;
-			}
-
 			if (Input.GetKeyUp(KeyCode.R)) {
-				RegisterSimpleCommand(InputCommandType.RESET_BUILDINGS);
+				RegisterCommand(new SimpleCommand(RESET_BUILDINGS));
 				return;
 			}
 
 			if (Input.GetKeyUp(KeyCode.S)) {
-				RegisterSimpleCommand(InputCommandType.SAVE_BUILDINGS);
+				RegisterCommand(new SimpleCommand(SAVE_BUILDINGS));
 				return;
 			}
 
 			if (Input.GetKeyUp(KeyCode.Escape)) {
-				RegisterSimpleCommand(InputCommandType.DISABLE_BUILDING_MODE);
+				RegisterCommand(new SimpleCommand(DISABLE_BUILDING_MODE));
 				return;
 			}
 		}

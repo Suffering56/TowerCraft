@@ -7,23 +7,27 @@ namespace pvs.logic.playground.building {
 
 	public interface IPlaygroundBuildingsState {
 
-		public void Save();
+		void Save();
 
-		public void Load(Transform parent);
+		void Load(Transform parent);
 
-		public void Reset();
+		void Reset();
 
-		public bool buildingModeEnabled { get; }
+		bool buildingModeEnabled { get; }
 
-		public GameObject StartBuildingProcess(BuildingType type);
+		GameObject StartBuildingProcess(BuildingType type);
 
-		public bool FinishBuildProcess(IsometricPoint finalBuildingPosition);
+		bool FinishBuildProcess(IsometricPoint finalBuildingPosition);
 
-		public void CancelBuildProcess();
+		void CancelBuildProcess();
 
-		public void UpdateUnderCursorPoint([CanBeNull] IsometricPoint newUnderCursorGridPoint);
+		void UpdateUnderCursorPoint([CanBeNull] IsometricPoint newUnderCursorGridPoint);
 
 		GridPointStatus GetGridPointStatus(IsometricPoint checkedPoint);
+
+		IBuildingState GetBuilding([NotNull] IsometricPoint point);
+
+		void SellBuilding([NotNull] IBuildingState buildingState);
 	}
 
 	public enum GridPointStatus {

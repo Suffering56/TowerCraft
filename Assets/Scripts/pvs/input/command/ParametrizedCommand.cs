@@ -1,21 +1,17 @@
 ﻿namespace pvs.input.command {
-	
-	public class ParametrizedCommand<T>: IInputCommand {
 
+	public class ParametrizedCommand<T> : IInputCommand {
+
+		private readonly InputCommandType commandType;
 		private readonly T param;
-		private readonly bool fromUI;
 
-		public ParametrizedCommand(T param, bool fromUI) {
+		public ParametrizedCommand(InputCommandType type, T param) {
+			this.commandType = type;
 			this.param = param;
-			this.fromUI = fromUI;
 		}
 
 		public InputCommandType GetCommandType() {
-			return InputCommandType.SELECT_BUILDING_TEMPLATE;
-		}
-
-		public bool IsFromUI() {
-			return fromUI;
+			return commandType;
 		}
 
 		public T GetParam() {

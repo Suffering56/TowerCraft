@@ -28,11 +28,11 @@ namespace pvs.logic.playground.building {
 		private readonly IDictionary<IsometricPoint, IBuildingState> buildingsPoints = new Dictionary<IsometricPoint, IBuildingState>();
 		private IBuildingState underConstructionBuilding;
 		private IsometricPoint underCursorPoint;
-		
+
 		public void Reset() {
 			buildingsPoints.Clear();
 		}
-		
+
 		public void Save() {
 			var playgroundBuildingNode = new PlaygroundBuildingsStateNode {
 				buildings = buildingsPoints
@@ -54,12 +54,12 @@ namespace pvs.logic.playground.building {
 			foreach (var buildingNode in loadedState.buildings) {
 				var gameObject = StartBuildingProcess(buildingNode.buildingType);
 				var gridPosition = buildingNode.position.ToPoint();
-				
+
 				gameObject.transform.parent = parent;
 				gameObject.transform.position = isometricInfo
 				                                .ConvertToWorldPosition(gridPosition)
 				                                .ToVector3(parent.position.z);
-				
+
 				FinishBuildProcess(gridPosition);
 			}
 		}
@@ -130,6 +130,17 @@ namespace pvs.logic.playground.building {
 			}
 
 			return GridPointStatus.NONE;
+		}
+
+		[CanBeNull]
+		public IBuildingState GetBuilding(IsometricPoint point) {
+			return buildingsPoints.TryGetValue(point, out var building)
+				? building
+				: null;
+		}
+
+		public void SellBuilding(IBuildingState buildingState) {
+			
 		}
 	}
 }

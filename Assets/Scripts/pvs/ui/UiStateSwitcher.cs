@@ -16,7 +16,7 @@ namespace pvs.ui {
 		}
 
 		private void Update() {
-			if (inputCommandsRegistry.HasCommand(InputCommandType.SHOW_ALL_BUILDINGS_PANEL)) {
+			if (inputCommandsRegistry.HasCommand(InputCommandType.OPEN_BUILDINGS_LIST_PANEL)) {
 				mainPanel.SetActive(false);
 				buildingsPanel.SetActive(true);
 			}
