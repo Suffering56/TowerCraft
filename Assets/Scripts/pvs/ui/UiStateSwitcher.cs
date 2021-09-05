@@ -1,6 +1,7 @@
 using pvs.input;
 using UnityEngine;
 using Zenject;
+using static pvs.input.InputCommandType;
 
 namespace pvs.ui {
 	public class UiStateSwitcher : MonoBehaviour {
@@ -16,12 +17,12 @@ namespace pvs.ui {
 		}
 
 		private void Update() {
-			if (inputCommandsRegistry.HasCommand(InputCommandType.OPEN_BUILDINGS_LIST_PANEL)) {
+			if (inputCommandsRegistry.HasCommand(OPEN_BUILDINGS_LIST_PANEL)) {
 				mainPanel.SetActive(false);
 				buildingsPanel.SetActive(true);
 			}
 			
-			if (inputCommandsRegistry.HasCommand(InputCommandType.DISABLE_BUILDING_MODE)) {
+			if (inputCommandsRegistry.HasAnyOfCommands(DISABLE_BUILDING_MODE, SELECT_BUILDING)) {
 				mainPanel.SetActive(true);
 				buildingsPanel.SetActive(false);
 			}

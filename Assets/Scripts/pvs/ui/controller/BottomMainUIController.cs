@@ -1,16 +1,16 @@
 using pvs.input;
 using pvs.input.command;
 using pvs.logic.playground.building;
-using UnityEngine;
 
 namespace pvs.ui.controller {
 	public class BottomMainUIController : AbstractUIController {
 
-		private GameObject sellBuildingButton;
+		private ButtonWrapper sellBuildingButton;
 		private IBuildingState selectedBuilding;
 
 		private void Start() {
-			sellBuildingButton = transform.Find("SellBuildingButton").gameObject;
+			sellBuildingButton = new ButtonWrapper(transform.Find("SellBuildingButton").gameObject);
+			sellBuildingButton.SetVisible(false);
 
 			RegisterSimpleButtonClickCommand("ShowBuildingsButton", InputCommandType.OPEN_BUILDINGS_LIST_PANEL);
 
@@ -24,13 +24,13 @@ namespace pvs.ui.controller {
 			var selectBuildingCmd = inputRegistry.GetCommand<ParametrizedCommand<IBuildingState>>(InputCommandType.SELECT_BUILDING);
 
 			if (selectBuildingCmd != null) {
-				sellBuildingButton.SetActive(true);
+				sellBuildingButton.SetVisible(true);
 				selectedBuilding = selectBuildingCmd.GetParam();
 				return;
 			}
 
 			if (inputRegistry.HasAnyOfCommands(InputCommandType.TERRAIN_CLICK, InputCommandType.SELL_BUILDING)) {
-				sellBuildingButton.SetActive(false);
+				sellBuildingButton.SetVisible(false);
 				selectedBuilding = null;
 				return;
 			}
