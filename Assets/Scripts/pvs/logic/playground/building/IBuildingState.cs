@@ -15,7 +15,7 @@ namespace pvs.logic.playground.building {
 		
 		public GameObject instanceGameObject { get; }      // ссылка на префаб строения
 
-		public void FinishBuild(int id, IsometricPoint point);
+		public void FinishBuild(int id, IsometricPoint point, IIsometricInfo isometricInfo);
 
 		[NotNull] BuildingNode ToJsonNode();
 	}

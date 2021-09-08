@@ -10,6 +10,7 @@ namespace pvs.ui.controller {
 			RegisterButtonClickCommand("BuildBarracksButton", new ParametrizedCommand<BuildingType>(SELECT_BUILDING_TEMPLATE, BARRACKS));
 			RegisterButtonClickCommand("BuildLargeBarracksButton", new ParametrizedCommand<BuildingType>(SELECT_BUILDING_TEMPLATE, LARGE_BARRACKS));
 			RegisterButtonClickCommand("BuildBashenkaButton", new ParametrizedCommand<BuildingType>(SELECT_BUILDING_TEMPLATE, BASHENKA));
+			RegisterButtonClickCommand("BuildFrostTowerButton", new ParametrizedCommand<BuildingType>(SELECT_BUILDING_TEMPLATE, FROST_TOWER));
 			RegisterSimpleButtonClickCommand("CancelBuildingProcessButton", DISABLE_BUILDING_MODE);
 		}
 	}

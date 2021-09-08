@@ -22,7 +22,8 @@ namespace pvs.logic.playground.building.settings {
 			return new Dictionary<BuildingType, BuildingSettings> {
 				[BuildingType.BARRACKS] = new BuildingSettings(BuildingType.BARRACKS, "Barracks"),
 				[BuildingType.LARGE_BARRACKS] = new BuildingSettings(BuildingType.LARGE_BARRACKS, "LargeBarracks", LARGE_BUILDING_OFFSETS),
-				[BuildingType.BASHENKA] = new BuildingSettings(BuildingType.BASHENKA, "Bashenka")
+				[BuildingType.BASHENKA] = new BuildingSettings(BuildingType.BASHENKA, "Bashenka"),
+				[BuildingType.FROST_TOWER] = new BuildingSettings(BuildingType.BASHENKA, "FrostTower")
 			};
 		}
 

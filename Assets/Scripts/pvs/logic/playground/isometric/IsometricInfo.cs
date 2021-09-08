@@ -29,6 +29,8 @@ namespace pvs.logic.playground.isometric {
 		// при разработке величина одной ячейки изометрической сетки была (0.5 х 0.25). соответственно если размер ячеек будет изменен, то нужно будет изменить и масштаб строений
 		private static readonly Vector2 ORIGIN_ELEMENT_SIZE = new Vector2(0.5f, 0.25f);
 
+		private readonly float sortingOrderMultiplier;
+
 		public IsometricInfo(IPlaygroundInitialState parent) {
 			var terrainSize = parent.terrainRect.size;
 
@@ -59,6 +61,10 @@ namespace pvs.logic.playground.isometric {
 			);
 
 			lastPoint = FindLastPoint();
+
+			var originWorldStepY = ORIGIN_ELEMENT_SIZE.y / 2;
+			var originMultiplier = 1 / originWorldStepY;                             // 1 / 0.125 = 8
+			sortingOrderMultiplier = Math.Max(originMultiplier / elementScale.y, 1); // чем больше scale, тем меньше multiplier
 		}
 
 		private IsometricPoint FindLastPoint() {
@@ -71,6 +77,12 @@ namespace pvs.logic.playground.isometric {
 			});
 
 			return new IsometricPoint(maxX, maxY);
+		}
+
+		public int CalculateSortingOrder(float posY) {
+			var maxY = topLeftPoint.y;
+			var relativePosY = maxY - posY;
+			return (int)(relativePosY * sortingOrderMultiplier);
 		}
 
 		public IsometricPoint ConvertToGridPosition(Vector2 gridCenterWorldPosition) {
@@ -91,20 +103,20 @@ namespace pvs.logic.playground.isometric {
 			);
 		}
 
-		public Vector2? GetNearestGridElementCenter(Vector2 mouseWorldPosition) {
+		public Vector2? GetNearestGridElementCenter(Vector2 worldPosition) {
 			var candidate1 = new Vector2(
-				VMath.RoundTo(mouseWorldPosition.x, elementSize.x),
-				VMath.RoundTo(mouseWorldPosition.y, elementSize.y)
+				VMath.RoundTo(worldPosition.x, elementSize.x),
+				VMath.RoundTo(worldPosition.y, elementSize.y)
 			);
 
-			var distance1 = candidate1 - mouseWorldPosition;
+			var distance1 = candidate1 - worldPosition;
 			var candidate2 = new Vector2(
 				candidate1.x - Math.Sign(distance1.x) * worldStep.x,
 				candidate1.y - Math.Sign(distance1.y) * worldStep.y
 			);
 
 			var flattenDistance1 = FlattenDistance(distance1);
-			var flattenDistance2 = FlattenDistance(candidate2 - mouseWorldPosition);
+			var flattenDistance2 = FlattenDistance(candidate2 - worldPosition);
 
 			var nearest = flattenDistance1.sqrMagnitude <= flattenDistance2.sqrMagnitude
 				? candidate1
@@ -121,11 +133,31 @@ namespace pvs.logic.playground.isometric {
 			       point.y > lastPoint.y;
 		}
 
-		private bool IsOutOfGrid(Vector2 nearest) {
-			return nearest.x < topLeftPoint.x ||
-			       nearest.y > topLeftPoint.y ||
-			       nearest.x > bottomRightPoint.x ||
-			       nearest.y < bottomRightPoint.y;
+		public bool IsOutOfGrid(Vector2 worldPosition) {
+			return IsOutOfGrid(worldPosition, out var ignore);
+		}
+
+		public bool IsOutOfGrid(Vector2 worldPosition, out Direction outDirection) {
+			outDirection = Direction.NONE;
+
+			if (worldPosition.x < topLeftPoint.x) {
+				outDirection = Direction.LEFT;
+				return true;
+			}
+			if (worldPosition.y > topLeftPoint.y) {
+				outDirection = Direction.TOP;
+				return true;
+			}
+			if (worldPosition.x > bottomRightPoint.x) {
+				outDirection = Direction.RIGHT;
+				return true;
+			}
+			if (worldPosition.y < bottomRightPoint.y) {
+				outDirection = Direction.BOTTOM;
+				return true;
+			}
+
+			return false;
 		}
 
 		/*

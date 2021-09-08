@@ -20,7 +20,7 @@ namespace pvs.logic.playground.building {
 			instanceGameObject = objectLink;
 		}
 
-		public void FinishBuild(int id, IsometricPoint point) {
+		public void FinishBuild(int id, IsometricPoint point, IIsometricInfo isometricInfo) {
 			if (this.id != UNFINISHED) {
 				throw new Exception($"building({this.id}) process with already finished");
 			}
@@ -28,7 +28,7 @@ namespace pvs.logic.playground.building {
 			this.id = id;
 			this.Point = point;
 			instanceGameObject.name += $"[{id}]";
-			instanceGameObject.GetComponent<SpriteRenderer>().sortingOrder = point.y;
+			instanceGameObject.GetComponent<SpriteRenderer>().sortingOrder = isometricInfo.CalculateSortingOrder(instanceGameObject.transform.position.y);
 			instanceGameObject.GetComponent<BuildingController>().Init(this);
 		}
 

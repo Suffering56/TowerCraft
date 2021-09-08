@@ -104,7 +104,7 @@ namespace pvs.logic.playground.building {
 				buildingsPoints.Add(point, underConstructionBuilding);
 			}
 
-			underConstructionBuilding.FinishBuild(buildingIdGenerator++, finalBuildingPosition);
+			underConstructionBuilding.FinishBuild(buildingIdGenerator++, finalBuildingPosition, isometricInfo);
 			CancelBuildProcess();
 			return true;
 		}
@@ -139,8 +139,6 @@ namespace pvs.logic.playground.building {
 				: null;
 		}
 
-		public void SellBuilding(IBuildingState buildingState) {
-			
-		}
+		public void SellBuilding(IBuildingState buildingState) { }
 	}
 }

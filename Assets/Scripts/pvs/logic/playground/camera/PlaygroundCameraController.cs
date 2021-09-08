@@ -23,6 +23,8 @@ namespace pvs.logic.playground.camera {
 		private const float CAMERA_ZOOM_COEFFICIENT = 0.1f;
 		private const float MOUSE_EDGE_OFFSET = 5f;
 
+		private bool active = true;
+
 		private Rect terrainSize => playgroundInitialState.terrainRect;
 
 		private void Start() {
@@ -33,6 +35,11 @@ namespace pvs.logic.playground.camera {
 		}
 
 		private void LateUpdate() {
+			if (Input.GetKeyUp(KeyCode.E)) {
+				active = !active;
+			}
+			if (!active) return;
+
 			var actualScreenSize = GetScreenSize();
 			var screenSizeChanged = actualScreenSize != lastScreenSize;
 

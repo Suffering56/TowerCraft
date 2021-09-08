@@ -62,6 +62,7 @@
      <Compile Include="Assets\Scripts\pvs\logic\playground\building\IPlaygroundBuildingsState.cs" />
      <Compile Include="Assets\Scripts\pvs\input\IInputCommand.cs" />
      <Compile Include="Assets\Scripts\pvs\utils\VUnityUtils.cs" />
+     <Compile Include="Assets\Scripts\pvs\ui\ButtonWrapper.cs" />
      <Compile Include="Assets\Scripts\pvs\ui\utils\AlwaysVisibleCursorComponent.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\building\settings\IBuildingSettings.cs" />
      <Compile Include="Assets\Scripts\pvs\ProjectContextInstaller.cs" />
@@ -69,6 +70,7 @@
      <Compile Include="Assets\Scripts\pvs\attribute\VRectConstraints.cs" />
      <Compile Include="Assets\Scripts\pvs\input\InputCommandsRegistry.cs" />
      <Compile Include="Assets\Scripts\pvs\utils\VMath.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\building\BuildingController.cs" />
      <Compile Include="Assets\Scripts\pvs\utils\VectorExtensions.cs" />
      <Compile Include="Assets\Scripts\pvs\logic\playground\camera\PlaygroundCameraState.cs" />
      <Compile Include="Assets\Scripts\pvs\ui\controller\AbstractUIController.cs" />
@@ -90,10 +92,10 @@
      <Compile Include="Assets\Scripts\pvs\logic\playground\terrain\PlaygroundTerrainGeneratorComponent.cs" />
      <Compile Include="Assets\Scripts\pvs\utils\JsonUtils.cs" />
      <Compile Include="Assets\Scripts\pvs\input\command\SimpleCommand.cs" />
-     <Compile Include="Assets\Scripts\pvs\logic\playground\isometric\IsometricGridElementController.cs" />
      <Compile Include="Assets\Scripts\pvs\ui\utils\ICursorVisibilityChangeListener.cs" />
-     <Compile Include="Assets\Scripts\pvs\logic\playground\building\BuildingController.cs" />
-     <Compile Include="Assets\Scripts\pvs\ui\ButtonWrapper.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\isometric\IsometricGridElementController.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\npc\NpcUnitController.cs" />
+     <Compile Include="Assets\Scripts\pvs\logic\playground\isometric\Direction.cs" />
      <None Include="Assets\playgroundState.json" />
      <Reference Include="UnityEngine">
      <HintPath>F:/02_Unity/Unity/2021.1.16f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -698,6 +700,12 @@
      <Reference Include="Unity.VisualScripting.Flow.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.VisualScripting.Flow.Editor.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.2D.Animation.Editor">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.Animation.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.InternalAPIEngineBridge.001">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll</HintPath>
+     </Reference>
      <Reference Include="Unity.VSCode.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
      </Reference>
@@ -706,6 +714,9 @@
      </Reference>
      <Reference Include="Unity.RenderPipelines.Universal.Runtime">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+     </Reference>
+     <Reference Include="PsdPlugin">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/PsdPlugin.dll</HintPath>
      </Reference>
      <Reference Include="Unity.TextMeshPro.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
@@ -728,17 +739,23 @@
      <Reference Include="Unity.Searcher.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.Searcher.Editor.dll</HintPath>
      </Reference>
-     <Reference Include="VSSettingsProvider">
-     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/VSSettingsProvider.dll</HintPath>
+     <Reference Include="Unity.2D.IK.Editor">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.IK.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.2D.Sprite.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
      </Reference>
-     <Reference Include="Unity.VisualScripting.Flow">
-     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.VisualScripting.Flow.dll</HintPath>
+     <Reference Include="VSSettingsProvider">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/VSSettingsProvider.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.2D.Psdimporter.Editor">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.Psdimporter.Editor.dll</HintPath>
      </Reference>
      <Reference Include="UnityEditor.UI">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.PlasticSCM.Editor">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.Rider.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
@@ -749,11 +766,8 @@
      <Reference Include="UnityEngine.UI">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
      </Reference>
-     <Reference Include="Unity.PlasticSCM.Editor">
-     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
-     </Reference>
-     <Reference Include="Unity.RenderPipelines.Core.Runtime">
-     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+     <Reference Include="Unity.VisualScripting.Flow">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.VisualScripting.Flow.dll</HintPath>
      </Reference>
      <Reference Include="Unity.VisualScripting.Core">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.VisualScripting.Core.dll</HintPath>
@@ -761,11 +775,26 @@
      <Reference Include="Unity.Mathematics">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.2D.IK.Runtime">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.IK.Runtime.dll</HintPath>
+     </Reference>
      <Reference Include="Unity.ShaderGraph.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.RenderPipelines.Core.Runtime">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+     </Reference>
      <Reference Include="Unity.RenderPipelines.Universal.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.2D.Animation.Triangle.Runtime">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.Animation.Triangle.Runtime.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.InternalAPIEditorBridge.001">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.001.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.2D.Animation.Runtime">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
@@ -778,6 +807,12 @@
      </Reference>
      <Reference Include="Unity.Mathematics.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.2D.Common.Runtime">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.Common.Runtime.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.2D.Common.Editor">
+     <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.2D.Common.Editor.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.Core.Editor">
      <HintPath>F:/02_Unity/projects/TowerCraft/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>

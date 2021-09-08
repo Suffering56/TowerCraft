@@ -15,10 +15,14 @@ namespace pvs.logic.playground.isometric {
 
 		public Vector2 ConvertToWorldPosition(IsometricPoint point);
 
-		public Vector2? GetNearestGridElementCenter(Vector2 mouseWorldPosition);
+		public Vector2? GetNearestGridElementCenter(Vector2 worldPosition);
 
 		public bool IsOutOfGrid(IsometricPoint point);
 
+		public bool IsOutOfGrid(Vector2 worldPosition, out Direction outDirection);
+
 		Vector3 elementScale { get; }
+
+		int CalculateSortingOrder(float posY);
 	}
 }
